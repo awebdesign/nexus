@@ -1,8 +1,8 @@
 <?php
 
-namespace Aweb\Nexus\Illuminate\Support;
+namespace Aweb\Nexus\Support\Illuminate\Support;
 
-use Aweb\Nexus\Illuminate\Support\Traits\Macroable;
+use Aweb\Nexus\Support\Illuminate\Support\Traits\Macroable;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\Generator\CombGenerator;

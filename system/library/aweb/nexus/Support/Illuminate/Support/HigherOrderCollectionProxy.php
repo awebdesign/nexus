@@ -1,6 +1,6 @@
 <?php
 
-namespace Aweb\Nexus\Illuminate\Support;
+namespace Aweb\Nexus\Support\Illuminate\Support;
 
 /**
  * @mixin \Aweb\Nexus\Support\Illuminate\Support\Enumerable

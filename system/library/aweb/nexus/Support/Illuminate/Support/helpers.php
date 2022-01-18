@@ -1,7 +1,7 @@
 <?php
 
-use Aweb\Nexus\Illuminate\Support\Arr;
-use Aweb\Nexus\Illuminate\Support\Collection;
+use Aweb\Nexus\Support\Illuminate\Support\Arr;
+use Aweb\Nexus\Support\Illuminate\Support\Collection;
 
 if (! function_exists('collect')) {
     /**

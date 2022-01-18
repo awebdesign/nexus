@@ -1,6 +1,6 @@
 <?php
 
-namespace Aweb\Nexus\Illuminate\Support\Traits;
+namespace Aweb\Nexus\Support\Illuminate\Support\Traits;
 
 trait Conditionable
 {

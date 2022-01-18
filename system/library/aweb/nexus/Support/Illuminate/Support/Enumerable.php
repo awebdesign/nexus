@@ -1,6 +1,6 @@
 <?php
 
-namespace Aweb\Nexus\Illuminate\Support;
+namespace Aweb\Nexus\Support\Illuminate\Support;
 
 use Countable;
 use Aweb\Nexus\Support\Illuminate\Contracts\Support\Arrayable;

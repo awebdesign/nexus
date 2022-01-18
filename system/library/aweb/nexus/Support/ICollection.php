@@ -2,7 +2,7 @@
 
 namespace Aweb\Nexus\Support;
 
-use Aweb\Nexus\Illuminate\Support\Collection;
+use Aweb\Nexus\Support\Illuminate\Support\Collection;
 
 class ICollection extends Collection
 {}
