@@ -1,6 +1,7 @@
 <?php
 
 use Aweb\Nexus\Support\IArr;
+use Aweb\Nexus\Support\IStr;
 
 class ControllerNexus extends Controller {
 
@@ -19,6 +20,17 @@ class ControllerNexus extends Controller {
             ['foo' => 2],
         ];
 
-        dump(IArr::pluck($arr, 'foo'));
+        dump(IArr::pluck($arr, [], 'foo'));
+
+        dump(IStr::plural('car'));
+        dump(IStr::snake('IAmASnake'));
+        dump(IStr::camel('i-am-a-camel'));
+        dump(IStr::slug('IAmASlug'));
+
+        dump(collect($arr)->sort(function($x, $y) {
+            return $y['foo'] - $x['foo'];
+        }));
+
+
     }
 }
