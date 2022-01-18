@@ -17,7 +17,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Aweb\Nexus\Support\Illuminate\Support;
+namespace Aweb\Nexus\Support;
 
 /**
  * Doctrine inflector has static methods for inflecting text.

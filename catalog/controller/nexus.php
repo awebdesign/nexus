@@ -1,7 +1,7 @@
 <?php
 
-use Aweb\Nexus\Support\IArr;
-use Aweb\Nexus\Support\IStr;
+use Aweb\Nexus\IArr;
+use Aweb\Nexus\IStr;
 
 class ControllerNexus extends Controller {
 

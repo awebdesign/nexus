@@ -1,6 +1,6 @@
 <?php
 
-namespace Aweb\Nexus\Support\Illuminate\Contracts\Support;
+namespace Aweb\Nexus\Contracts\Support;
 
 interface Jsonable
 {

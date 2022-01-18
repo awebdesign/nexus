@@ -27,7 +27,7 @@
             "Aweb\\Nexus\\": "./"
         },
         "files": [
-            "Support/Illuminate/Support/helpers.php"
+            "src/Support/helpers.php"
         ],
         "classmap": [
         ]

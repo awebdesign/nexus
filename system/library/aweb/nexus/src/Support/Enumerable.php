@@ -1,10 +1,10 @@
 <?php
 
-namespace Aweb\Nexus\Support\Illuminate\Support;
+namespace Aweb\Nexus\Support;
 
 use Countable;
-use Aweb\Nexus\Support\Illuminate\Contracts\Support\Arrayable;
-use Aweb\Nexus\Support\Illuminate\Contracts\Support\Jsonable;
+use Aweb\Nexus\Contracts\Support\Arrayable;
+use Aweb\Nexus\Contracts\Support\Jsonable;
 use IteratorAggregate;
 use JsonSerializable;
 
@@ -273,7 +273,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Get all items except for those with the specified keys.
      *
-     * @param  \Aweb\Nexus\Support\Illuminate\Support\Enumerable<array-key, TKey>|array<array-key, TKey>  $keys
+     * @param  \Aweb\Nexus\Support\Enumerable<array-key, TKey>|array<array-key, TKey>  $keys
      * @return static
      */
     public function except($keys);
@@ -728,7 +728,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Get the items with the specified keys.
      *
-     * @param  \Aweb\Nexus\Support\Illuminate\Support\Enumerable<array-key, TKey>|array<array-key, TKey>  $keys
+     * @param  \Aweb\Nexus\Support\Enumerable<array-key, TKey>|array<array-key, TKey>  $keys
      * @return static
      */
     public function only($keys);
@@ -871,8 +871,8 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
      * @param  mixed  $value
      * @return TValue
      *
-     * @throws \Aweb\Nexus\Support\Illuminate\Support\ItemNotFoundException
-     * @throws \Aweb\Nexus\Support\Illuminate\Support\MultipleItemsFoundException
+     * @throws \Aweb\Nexus\Support\ItemNotFoundException
+     * @throws \Aweb\Nexus\Support\MultipleItemsFoundException
      */
     public function sole($key = null, $operator = null, $value = null);
 
@@ -1072,7 +1072,7 @@ interface Enumerable extends Arrayable, Countable, IteratorAggregate, Jsonable, 
     /**
      * Collect the values into a collection.
      *
-     * @return \Aweb\Nexus\Support\Illuminate\Support\Collection<TKey, TValue>
+     * @return \Aweb\Nexus\Support\Collection<TKey, TValue>
      */
     public function collect();
 

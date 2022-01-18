@@ -1,16 +1,16 @@
 <?php
 
-namespace Aweb\Nexus\Support\Illuminate\Support;
+namespace Aweb\Nexus\Support;
 
 /**
- * @mixin \Aweb\Nexus\Support\Illuminate\Support\Enumerable
+ * @mixin \Aweb\Nexus\Support\Enumerable
  */
 class HigherOrderCollectionProxy
 {
     /**
      * The collection being operated on.
      *
-     * @var \Aweb\Nexus\Support\Illuminate\Support\Enumerable
+     * @var \Aweb\Nexus\Support\Enumerable
      */
     protected $collection;
 
@@ -24,7 +24,7 @@ class HigherOrderCollectionProxy
     /**
      * Create a new proxy instance.
      *
-     * @param  \Aweb\Nexus\Support\Illuminate\Support\Enumerable  $collection
+     * @param  \Aweb\Nexus\Support\Enumerable  $collection
      * @param  string  $method
      * @return void
      */

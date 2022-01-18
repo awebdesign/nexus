@@ -1,6 +1,6 @@
 <?php
 
-namespace Aweb\Nexus\Support\Illuminate\Support;
+namespace Aweb\Nexus\Support;
 
 use stdClass;
 use Countable;
@@ -8,9 +8,9 @@ use Exception;
 use ArrayAccess;
 use Traversable;
 use ArrayIterator;
-use Aweb\Nexus\Support\Illuminate\Support\Traits\Macroable;
-use Aweb\Nexus\Support\Illuminate\Contracts\Support\Arrayable;
-use Aweb\Nexus\Support\Illuminate\Contracts\Support\Jsonable;
+use Aweb\Nexus\Support\Traits\Macroable;
+use Aweb\Nexus\Contracts\Support\Arrayable;
+use Aweb\Nexus\Contracts\Support\Jsonable;
 use CachingIterator;
 use JsonSerializable;
 use IteratorAggregate;

@@ -1,7 +1,7 @@
 <?php
 
-use Aweb\Nexus\Support\Illuminate\Support\Arr;
-use Aweb\Nexus\Support\Illuminate\Support\Collection;
+use Aweb\Nexus\Support\Arr;
+use Aweb\Nexus\Support\Collection;
 
 if (! function_exists('collect')) {
     /**
@@ -11,7 +11,7 @@ if (! function_exists('collect')) {
      * @template TValue
      *
      * @param  \Illuminate\Contracts\Support\Arrayable<TKey, TValue>|iterable<TKey, TValue>|null  $value
-     * @return \Aweb\Nexus\Support\Illuminate\Support\Collection<TKey, TValue>
+     * @return \Aweb\Nexus\Support\Collection<TKey, TValue>
      */
     function collect($value = null)
     {

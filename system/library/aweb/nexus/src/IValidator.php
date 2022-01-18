@@ -1,6 +1,6 @@
 <?php
 
-namespace Aweb\Nexus\Validation;
+namespace Aweb\Nexus;
 
 use Rakit\Validation\Validator;
 

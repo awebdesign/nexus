@@ -1,16 +1,16 @@
 <?php
 
-namespace Aweb\Nexus\Support\Illuminate\Support\Traits;
+namespace Aweb\Nexus\Support\Traits;
 
 use CachingIterator;
 use Closure;
 use Exception;
-use Aweb\Nexus\Support\Illuminate\Contracts\Support\Arrayable;
-use Aweb\Nexus\Support\Illuminate\Contracts\Support\Jsonable;
-use Aweb\Nexus\Support\Illuminate\Support\Arr;
-use Aweb\Nexus\Support\Illuminate\Support\Collection;
-use Aweb\Nexus\Support\Illuminate\Support\Enumerable;
-use Aweb\Nexus\Support\Illuminate\Support\HigherOrderCollectionProxy;
+use Aweb\Nexus\Contracts\Support\Arrayable;
+use Aweb\Nexus\Contracts\Support\Jsonable;
+use Aweb\Nexus\Support\Arr;
+use Aweb\Nexus\Support\Collection;
+use Aweb\Nexus\Support\Enumerable;
+use Aweb\Nexus\Support\HigherOrderCollectionProxy;
 use JsonSerializable;
 use Symfony\Component\VarDumper\VarDumper;
 use Traversable;
@@ -883,7 +883,7 @@ trait EnumeratesValues
     /**
      * Collect the values into a collection.
      *
-     * @return \Aweb\Nexus\Support\Illuminate\Support\Collection<TKey, TValue>
+     * @return \Aweb\Nexus\Support\Collection<TKey, TValue>
      */
     public function collect()
     {

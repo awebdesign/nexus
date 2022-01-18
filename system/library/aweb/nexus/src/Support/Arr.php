@@ -1,9 +1,9 @@
 <?php
 
-namespace Aweb\Nexus\Support\Illuminate\Support;
+namespace Aweb\Nexus\Support;
 
 use ArrayAccess;
-use Aweb\Nexus\Support\Illuminate\Support\Traits\Macroable;
+use Aweb\Nexus\Support\Traits\Macroable;
 use InvalidArgumentException;
 
 class Arr
