@@ -1,0 +1,35 @@
+{
+    "name": "aweb/nexus",
+    "description": "Aweb Mods for OpenCart",
+    "type": "library",
+    "keywords": [
+		"mods",
+        "framework",
+        "Aweb",
+        "Aweb Design",
+        "OpenCart"
+    ],
+    "homepage": "https://www.awebdesign.ro/",
+    "version": "2.0.2",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "rakit/validation": "^1.4",
+        "symfony/var-dumper": "^5.4"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Aweb\\Nexus\\": "./"
+        },
+        "files": [
+
+        ],
+        "classmap": [
+        ]
+    }
+}
