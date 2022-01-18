@@ -93,7 +93,7 @@ if ($config->has('model_autoload')) {
 $controller = new Front($registry);
 //todo: ocmod
 require_once DIR_SYSTEM . 'library/aweb/nexus/autoloader.php';
-\Aweb\Nexus\Init::getInstance()->boot($registry);
+\Aweb\Nexus\Nexus::getInstance()->init($registry);
 
 
 // Pre Actions

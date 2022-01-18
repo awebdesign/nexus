@@ -1,6 +1,7 @@
 <?php
 
 use Aweb\Nexus\IArr;
+use Aweb\Nexus\IRequest;
 use Aweb\Nexus\IStr;
 
 class ControllerNexus extends Controller {
@@ -31,6 +32,6 @@ class ControllerNexus extends Controller {
             return $y['foo'] - $x['foo'];
         }));
 
-
+        dump(IRequest::method());
     }
 }

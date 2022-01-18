@@ -8,6 +8,8 @@
 
 namespace Aweb\Nexus;
 
+use Exception;
+
 /**
  * Can be customized from main config.php
  */
@@ -40,7 +42,7 @@ require_once(DIR_SYSTEM . 'library/aweb/nexus/vendor/autoload.php');
 // use \Aweb\Nexus\Session\StartSession;
 // use \Aweb\Nexus\Session\SessionManager;
 
-class Init
+class Nexus
 {
     private static $instance;
     private static $registry;
@@ -61,7 +63,7 @@ class Init
         return self::$instance;
     }
 
-    public function boot($registry)
+    public function init($registry)
     {
         if($this->isBooted()) {
             return null; //already booted
@@ -81,8 +83,21 @@ class Init
     {
         $registry = self::$registry;
 
-        return $registry->get($type);
+        $data = $registry->get($type);
+
+        if(is_null($data)) {
+            throw new Exception('sadas das dsadsa dsa');
+        }
+
+        return $data;
     }
+
+    public static function request() {
+        return self::registry('request');
+    }
+    //session
+    //config
+    //etc
 
     /**
      * Determine if the application has booted.
