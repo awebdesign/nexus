@@ -44,7 +44,6 @@ class Init
 {
     private static $instance;
     private static $registry;
-    private $kernel;
     private $booted;
 
     // single instance only
@@ -71,15 +70,6 @@ class Init
         self::$registry = $registry;
 
         $this->booted = true;
-    }
-
-    public function checkErrors()
-    {
-        // if(defined('NEXUS_DEBUG')) {
-        //     $whoops = new \Whoops\Run;
-        //     $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-        //     $whoops->register();
-        // }
     }
 
     /**
