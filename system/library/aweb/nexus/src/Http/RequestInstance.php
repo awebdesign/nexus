@@ -6,7 +6,7 @@ use Aweb\Nexus\Nexus;
 use Aweb\Nexus\Support\Arr;
 use stdClass;
 
-class Request
+class RequestInstance
 {
     private $nexus;
 

@@ -2,9 +2,9 @@
 
 namespace Aweb\Nexus;
 
-use Rakit\Validation\Validator;
+use Rakit\Validation\Validator as ValidationValidator;
 
-class IValidator
+class Validator
 {
     protected $instance;
 
@@ -22,7 +22,7 @@ class IValidator
 
     protected static function configure()
     {
-        $validator = new Validator;
+        $validator = new ValidationValidator();
 
         //todo: lang set
 

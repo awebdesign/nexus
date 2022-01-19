@@ -2,13 +2,13 @@
 
 namespace Aweb\Nexus;
 
-use Aweb\Nexus\Http\Request;
+use Aweb\Nexus\Http\RequestInstance;
 use Exception;
 
 /**
  * extending Laravel Str helper
  */
-class IRequest
+class Request
 {
     /**
      * Opencart registry
@@ -27,7 +27,7 @@ class IRequest
     public static function getInstance()
     {
         if (!self::$instance) {
-            self::$instance = new Request(Nexus::getInstance());
+            self::$instance = new RequestInstance(Nexus::getInstance());
         }
 
         return self::$instance;
