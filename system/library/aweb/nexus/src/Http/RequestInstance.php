@@ -163,7 +163,7 @@ class RequestInstance
      */
     public function setMethod(string $method): void
     {
-        $this->request->server['REQUEST_METHOD'] = $method;
+        $this->request->server['REQUEST_METHOD'] = strtoupper($method);
     }
 
     /**
@@ -173,7 +173,7 @@ class RequestInstance
      */
     public function getMethod(): string
     {
-        return $this->request->server['REQUEST_METHOD'];
+        return strtoupper($this->request->server['REQUEST_METHOD']);
     }
 
     /**
