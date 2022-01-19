@@ -87,6 +87,43 @@ if (! function_exists('data_get')) {
     }
 }
 
+/**
+ * Determine if an array or object has property using "dot" notation.
+ *
+ * @param  mixed  $target
+ * @param  string|array|int|null  $key
+ * @return bool
+ */
+if (! function_exists('data_has'))
+{
+    function data_has($target, $key, $default = null): bool
+    {
+        if (is_null($key)) {
+            return false;
+        }
+
+        $key = is_array($key) ? $key : explode('.', $key);
+
+        foreach ($key as $i => $segment) {
+            unset($key[$i]);
+
+            if (is_null($segment)) {
+                return false;
+            }
+
+            if (Arr::accessible($target) && Arr::exists($target, $segment)) {
+                $target = $target[$segment];
+            } elseif (is_object($target) && isset($target->{$segment})) {
+                $target = $target->{$segment};
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
 if (! function_exists('data_set')) {
     /**
      * Set an item on an array or object using dot notation.

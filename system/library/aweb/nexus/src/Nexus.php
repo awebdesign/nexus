@@ -75,6 +75,16 @@ class Nexus
     }
 
     /**
+     * return Opencart Registry
+     *
+     * @return mixed return Opencart Registry
+     */
+    public function getRegistry()
+    {
+        return self::$registry;
+    }
+
+    /**
      * Retrieves the OpenCart registry
      *
      * @return object

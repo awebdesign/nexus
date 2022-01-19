@@ -2,21 +2,35 @@
 
 namespace Aweb\Nexus\Http;
 
-use Aweb\Nexus;
+use Aweb\Nexus\Nexus;
 use Aweb\Nexus\Support\Arr;
 use stdClass;
 
 class Request
 {
-    private $request;
+    private $nexus;
+
+    /**
+     * Custom parameters.
+     */
+    private $attributes = [];
 
     /**
      * Opencart request object
      *
-     * @param $request
+     * @param $nexus
      */
-    public function __construct($request) {
-        $this->request = $request;
+    public function __construct(Nexus $nexus) {
+        $this->nexus = $nexus;
+    }
+
+    public function __get($prop)
+    {
+        if ($prop === 'registry') {
+            return $this->nexus->getRegistry();
+        }
+
+        return $this->nexus->getRegistry()->get($prop);
     }
 
     // Singleton methods
@@ -26,15 +40,33 @@ class Request
     }
 
     /**
-     * Get request key in the following order of fallback: registry, query string, post, null. If nothing found, fallback is returned instead
+     * Gets a "parameter" value from any bag.
+     *
+     * This method is mainly useful for libraries that want to provide some flexibility. If you don't need the
+     * flexibility in controllers, it is better to explicitly get request parameters from the appropriate
+     * public property instead (attributes, query, request).
+     *
+     * Order of precedence: PATH (routing placeholders or custom attributes), GET, POST
      *
      * @param string $key
-     * @param mixed $fallback
+     * @param mixed $default
      * @return mixed
      */
-    public function get(string $key, mixed $fallback = null): mixed
+    public function get(string $key, $default = null)
     {
+        if ($this->registry->has($key)) {
+            return $this->registry->get($key);
+        }
 
+        if (data_has($this->request->get, $key)) {
+            return data_get($this->request->get, $key, $default);
+        }
+
+        if (data_has($this->request->post, $key)) {
+            return data_get($this->request->post, $key, $default);
+        }
+
+        return $default;
     }
 
     /**
@@ -44,21 +76,22 @@ class Request
      * @param mixed $value
      * @return void
      */
-    public function set(string $key, mixed $value): void
+    public function set(string $key, $value): void
     {
-
+        $this->attributes[$key] = $value;
     }
 
     /**
-     * Get request->post[key]. If nothing found, fallback is returned instead
+     * Retrieve a request payload item from the request.
+     * Get request->post[key]. If nothing found, default is returned instead
      *
      * @param string $key
-     * @param mixed $fallback
+     * @param mixed $default
      * @return void
      */
-    public function post(string $key, mixed $fallback = null)
+    public function post(string $key, $default = null)
     {
-
+        return data_get($this->request->post, $key, $default);
     }
 
     /**
@@ -78,7 +111,8 @@ class Request
      */
     public function isSecure(): bool
     {
-
+        // todo: ask. luat de la interlink
+        return isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'));
     }
 
     /**
@@ -88,7 +122,7 @@ class Request
      */
     public function getPort(): int
     {
-
+        return data_get($this->request->server, 'SERVER_PORT');
     }
 
     /**
@@ -98,7 +132,7 @@ class Request
      */
     public function getQuery(): array
     {
-
+        return $this->request->get;
     }
 
     /**
@@ -108,7 +142,7 @@ class Request
      */
     public function getQueryString(): string
     {
-
+        return html_entity_decode(data_get($this->request->server, 'QUERY_STRING'));
     }
 
     /**
@@ -118,51 +152,51 @@ class Request
      */
     public function getHost(): string
     {
-
+        return $this->request->server['SERVER_NAME'];
     }
 
     /**
-     * Call request->server['method'] = $method
+     * Call request->server['REQUEST_METHOD'] = = $method
      *
      * @param string $method
      * @return void
      */
     public function setMethod(string $method): void
     {
-
+        $this->request->server['REQUEST_METHOD'] = $method;
     }
 
     /**
-     * returns request->server['method']
+     * returns request->server['REQUEST_METHOD'] =
      *
      * @return string
      */
     public function getMethod(): string
     {
-
+        return $this->request->server['REQUEST_METHOD'];
     }
 
     /**
-     * request->server[key] ?? fallback
+     * request->server[key] ?? default
      *
      * @param string|null $key
      * @param mixed $default
      * @return mixed
      */
-    public function server(string $key = null, mixed $default = null): mixed
+    public function server(string $key = null, $default = null)
     {
-
+        return data_get($this->request->server, $key, $default);
     }
 
     /**
-     * isset(request->get[key]) || isset(request->post[key])
+     * Determine if the request contains a given input item key.
      *
      * @param string $key
      * @return boolean
      */
     public function has(string $key): bool
     {
-
+        return data_has($this->attributes, $key) || data_has($this->request->get, $key) || data_has($this->request->post, $key);
     }
 
     /**
@@ -173,8 +207,21 @@ class Request
      */
     public function hasAny(array $keys): bool
     {
+        foreach ($keys as $key) {
+            if ($this->has($key)) {
+                return true;
+            }
+        }
 
+        return false;
     }
+
+    // private
+    private function isEmptyString($value)
+    {
+        return !is_bool($value) && ! is_array($value) && trim((string) $value) === '';
+    }
+
 
     /**
      * Determine if the request contains a non-empty value for an input item. accept arrays too. Fails if at least one key is empty
@@ -184,7 +231,14 @@ class Request
      */
     public function filled($key): bool
     {
+        $keys = (array)$key;
+        foreach ($keys as $key) {
+            if ($this->isEmptyString($this->get($key))) {
+                return false;
+            }
+        }
 
+        return true;
     }
 
     /**
@@ -195,28 +249,42 @@ class Request
      */
     public function anyFilled($keys): bool
     {
+        $keys = (array)$keys;
+        foreach ($keys as $key) {
+            if (!$this->isEmptyString($this->get($key))) {
+                return true;
+            }
+        }
 
+        return false;
     }
 
     /**
+     * Get the keys for all of the input and files.
      * array_keys(array_merge(registry->all, request->post, request->get))
      *
      * @return array
      */
     public function keys(): array
     {
+        $keys = array_merge(
+            array_keys($this->attributes),
+            array_keys($this->request->get),
+            array_keys($this->request->post)
+        );
 
+        return array_unique($keys);
     }
 
     /**
-     * array_merge(registry->all, request->post, request->get);
+     * array_merge(request->post, request->get, registry->all);
      *
-     * @param array|null $keys [key => value] fallback for missing or empty values
+     * @param array|null $keys [key => value] default for missing or empty values
      * @return array
      */
-    public function all($keys = null): array
+    public function all(): array
     {
-
+        return array_merge($this->request->post, $this->request->get, $this->attributes);
     }
 
     /**
@@ -226,9 +294,9 @@ class Request
      * @param mixed $default
      * @return mixed
      */
-    public function input(string $key = null, mixed $default = null): mixed
+    public function input(string $key = null, $default = null)
     {
-
+        return $this->post($key, $default);
     }
 
     /**
@@ -281,16 +349,23 @@ class Request
      * @param  string|array|null  $default
      * @return string|array|null
      */
-    public function query($key = null, $default = null): mixed
+    public function query($key = null, $default = null)
     {
-
+        return data_get($this->request->get, $key, $default);
     }
 
-    public function merge()
+    /**
+     * A way to set many custom attributes on request
+     *
+     * @param array $data
+     * @return void
+     */
+    public function merge(array $data): void
     {
-        //TODO:
+        $this->attributes = array_merge($this->attributes, $data);
     }
 
+// TODO:
 // public function hasCookie($key)
 // public function cookie($key = null, $default = null)
 // public function allFiles()
@@ -315,9 +390,6 @@ class Request
 // public function getCharsets()
 // public function getEncodings()
 // public function isXmlHttpRequest()
-
-
 // public function json($key = null, $default = null)
-
 
 }
