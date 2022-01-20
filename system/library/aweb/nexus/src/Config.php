@@ -2,13 +2,8 @@
 
 namespace Aweb\Nexus;
 
-use Aweb\Nexus\Http\RequestInstance;
 use Aweb\Nexus\Support\Arr;
-use Exception;
 
-/**
- * extending Laravel Str helper
- */
 class Config
 {
     private function __construct() {}

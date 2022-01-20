@@ -2,6 +2,7 @@
 
 use Aweb\Nexus\Config;
 use Aweb\Nexus\Request;
+use Aweb\Nexus\Session;
 use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Str;
 
@@ -80,6 +81,47 @@ class ControllerNexus extends Controller {
         ]));
         dump(Config::get('a'));
         dump(Config::get('b'));
+
+        dump(Session::has('foo'));
+        Session::set('foo', 123);
+        dump(Session::has('foo'));
+        Session::put('foo.bar', 234);
+        dump(Session::has('foo.bar'));
+        dump(Session::get('foo.bar'));
+        dump(Session::pull('foo'));
+        dump(Session::get('foo'));
+        dump(Session::increment('foo'));
+        dump(Session::increment('foo'));
+        dump(Session::increment('foo'));
+        dump(Session::decrement('foo'));
+        dump(Session::all());
+        Session::forget('foo');
+        dump(Session::all());
+        // Session::flush();
+        dump(Session::all());
+        dump(Session::getId());
+        dump(Session::getName());
+        dump(Session::getFlashBag());
+        Session::flash('foo', 'bar');
+        dump(Session::getFlashBag());
+        dump(Session::all());
+        dump(Session::increment('i'));
+        if ((Session::get('i') % 3) === 0) {
+            Session::flash('_success', 'My flashed data');
+            dump('Next refresh you will have flashed data too');
+        } else {
+            dump('-');
+        }
+
+        dump(Session::get('_success'));
+        dump('When session.i is divisible with 2, data will be keeped on session permanent. You should see session.all filling with even numbers');
+
+        if (Session::get('i') % 2 === 0) {
+            Session::flash('k'.Session::get('i'), Session::get('i'));
+            Session::keep('k'.Session::get('i'));
+        }
+        dump(Session::all());
+
 
 
     }

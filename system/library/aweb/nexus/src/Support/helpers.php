@@ -96,7 +96,7 @@ if (! function_exists('data_get')) {
  */
 if (! function_exists('data_has'))
 {
-    function data_has($target, $key, $default = null): bool
+    function data_has($target, $key): bool
     {
         if (is_null($key)) {
             return false;
@@ -225,7 +225,6 @@ if (! function_exists('value')) {
     }
 }
 
-// added from laravel 8.0
 if (! function_exists('class_basename')) {
     /**
      * Get the class "basename" of the given object / class.

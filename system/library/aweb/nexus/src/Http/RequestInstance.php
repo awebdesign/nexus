@@ -16,8 +16,6 @@ class RequestInstance
     private $attributes = [];
 
     /**
-     * Opencart request object
-     *
      * @param $nexus
      */
     public function __construct(Nexus $nexus) {
@@ -78,7 +76,7 @@ class RequestInstance
      */
     public function set(string $key, $value): void
     {
-        $this->attributes[$key] = $value;
+        data_set($this->attributes, $key, $value);
     }
 
     /**
