@@ -23,11 +23,7 @@ class SessionInstance
             $this->flashed = $this->session->data[$this->flashBag];
         }
 
-        if (!empty($this->session->data['_reflash'])) {
-            unset($this->session->data['_reflash']);
-        } else {
-            unset($this->session->data[$this->flashBag]);
-        }
+        unset($this->session->data[$this->flashBag]);
     }
 
     public function __get($prop)
@@ -210,21 +206,24 @@ class SessionInstance
     }
 
     /**
+     * If you need to persist your flash data for several requests
+     *
+     * @return void
+     */
+    public function reflash()
+    {
+        $this->session->data[$this->flashBag] = $this->flashed;
+    }
+
+    /**
      * If you only need to keep specific flash data (move them from _flash to permanent)
-     * @param string|array $key to be moved from flashBag to persist. If empty array is given, will move all
+     * @param string|array $key to be moved from flashBag to persist.
      *
      * @return void
      */
     public function keep($key)
     {
         if (empty($this->flashed)) {
-            return;
-        }
-
-        if (is_array($key) && empty($key)) {
-            $this->session->data = array_merge($this->session->data, $this->flashed);
-            unset($this->session->data[$this->flashBag]);
-            $this->flashed = [];
             return;
         }
 
@@ -235,15 +234,5 @@ class SessionInstance
                 unset($this->session->data[$this->flashBag][$k]);
             }
         }
-    }
-
-    /**
-     * To persist your flash data only for the current request...
-     *
-     * @return void
-     */
-    public function now($name, $value)
-    {
-        data_set($this->flashed, $name, $value);
     }
 }
