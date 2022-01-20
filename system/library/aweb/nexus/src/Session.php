@@ -31,17 +31,6 @@ class Session
         return self::$instance;
     }
 
-    /**
-     * If you need to persist your flash data for several requests
-     * Note that this must be called before any session data access because data is cleared on __construct => getInstance
-     *
-     * @return void
-     */
-    public function reflash()
-    {
-        Nexus::registry('session')->data['_reflash'] = true;
-    }
-
     public static function __callStatic($name, $arguments = [])
     {
         if (!method_exists(self::getInstance(), $name)) {

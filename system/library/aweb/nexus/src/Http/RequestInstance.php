@@ -3,6 +3,7 @@
 namespace Aweb\Nexus\Http;
 
 use Aweb\Nexus\Nexus;
+use Aweb\Nexus\Session;
 use Aweb\Nexus\Support\Arr;
 use stdClass;
 
@@ -16,10 +17,22 @@ class RequestInstance
     private $attributes = [];
 
     /**
+     * Old post data
+     */
+    private $old = [];
+
+    /**
      * @param $nexus
      */
     public function __construct(Nexus $nexus) {
         $this->nexus = $nexus;
+
+        // old post data
+        if ($this->getMethod() === 'POST') {
+            Session::flash('_old', $this->request->post);
+        } else {
+            $this->old = Session::get('_old', []);
+        }
     }
 
     public function __get($prop)
@@ -34,7 +47,7 @@ class RequestInstance
     // Singleton methods
     public function method(): string
     {
-        return $this->request->server['REQUEST_METHOD'];
+        return strtoupper($this->request->server['REQUEST_METHOD']);
     }
 
     /**
@@ -361,6 +374,34 @@ class RequestInstance
     public function merge(array $data): void
     {
         $this->attributes = array_merge($this->attributes, $data);
+    }
+
+    /**
+     * Get old input, aka request->post
+     *
+     * @param string $name
+     * @param mixed $default
+     * @return void
+     */
+    public function getOld(string $name = '', $default = null)
+    {
+        if ($name) {
+            return data_get($this->old, $name, $default);
+        }
+
+        return $this->old;
+    }
+
+    /**
+     * Get old input, aka request->post
+     *
+     * @param string $name
+     * @param mixed $default
+     * @return void
+     */
+    public function old(string $name = '', $default = null)
+    {
+        return $this->getOld($name, $default);
     }
 
 // TODO:

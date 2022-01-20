@@ -11,6 +11,11 @@ class ControllerNexus extends Controller {
     public function index()
     {
 
+        if (Request::get('flush')) {
+            Session::flush();
+        }
+
+
         $this->request->post['nested'] = [
             'nested1' => [
                 'nested2' => [
@@ -97,7 +102,6 @@ class ControllerNexus extends Controller {
         dump(Session::all());
         Session::forget('foo');
         dump(Session::all());
-        // Session::flush();
         dump(Session::all());
         dump(Session::getId());
         dump(Session::getName());
@@ -122,7 +126,13 @@ class ControllerNexus extends Controller {
         }
         dump(Session::all());
 
+        dump('old firstname', Request::getOld('firstname'));
+        dump('old lastname', Request::getOld('lastname'));
 
-
+        echo '<form method="POST" action="">
+            Firstname <input type="text" name="firstname">
+            Lastname <input type="text" name="lastname">
+            <button type="submit">Submit</button>
+        </form>';
     }
 }
