@@ -1,5 +1,8 @@
 <?php
 
+use Aweb\Nexus\Config;
+use Aweb\Nexus\Request;
+use Aweb\Nexus\Session;
 use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Collection;
 
@@ -237,5 +240,53 @@ if (! function_exists('class_basename')) {
         $class = is_object($class) ? get_class($class) : $class;
 
         return basename(str_replace('\\', '/', $class));
+    }
+}
+
+/* **************************** FACADE FUNCTIONS **************************** */
+if (! function_exists('request')) {
+    /**
+     * If param is given, call Request::get($key, $default), else return request instance
+     *
+     * @param string $key
+     * @return mixed
+     */
+    function request(string $key = '', $default = null)
+    {
+        if (!$key) {
+            return Request::getInstance();
+        }
+
+        return Request::get($key, $default);
+    }
+}
+
+if (! function_exists('session')) {
+    /**
+     * If param is given, call Session::get($key, $default), else return Session instance
+     *
+     * @param string $key
+     * @return mixed
+     */
+    function session(string $key = '', $default = null)
+    {
+        if (!$key) {
+            return Session::getInstance();
+        }
+
+        return Session::get($key, $default);
+    }
+}
+
+if (! function_exists('config')) {
+    /**
+     * call Config::get($key, $default),
+     *
+     * @param string $key
+     * @return mixed
+     */
+    function config(string $key, $default = null)
+    {
+        return Config::get($key, $default);
     }
 }
