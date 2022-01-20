@@ -6,7 +6,7 @@ use Aweb\Nexus\Nexus;
 
 class SessionInstance
 {
-    private $nexus;
+    private $session;
 
     private $flashBag = '_flash';
 
@@ -16,23 +16,14 @@ class SessionInstance
     /**
      * @param $nexus
      */
-    public function __construct(Nexus $nexus) {
-        $this->nexus = $nexus;
+    public function __construct() {
+        $this->session = Nexus::getRegistry('session');
 
         if (isset($this->session->data[$this->flashBag])) {
             $this->flashed = $this->session->data[$this->flashBag];
         }
 
         unset($this->session->data[$this->flashBag]);
-    }
-
-    public function __get($prop)
-    {
-        if ($prop === 'registry') {
-            return $this->nexus->getRegistry();
-        }
-
-        return $this->nexus->getRegistry()->get($prop);
     }
 
     /**

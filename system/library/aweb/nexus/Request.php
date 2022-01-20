@@ -2,11 +2,10 @@
 
 namespace Aweb\Nexus;
 
-use Aweb\Nexus\Http\SessionInstance;
+use Aweb\Nexus\Http\RequestInstance;
 use Exception;
 
-
-class Session
+class Request
 {
     /**
      * Opencart registry
@@ -21,11 +20,10 @@ class Session
     /**
      * SET OpenCart registry as core, called only once
      */
-
     public static function getInstance()
     {
         if (!self::$instance) {
-            self::$instance = new SessionInstance(Nexus::getInstance());
+            self::$instance = new RequestInstance();
         }
 
         return self::$instance;

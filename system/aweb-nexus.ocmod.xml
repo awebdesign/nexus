@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<name>Aweb Nexus</name>
+    <code>aweb-nexus</code>
+	<version>2.0.2</version>
+	<author>AWeb Design</author>
+	<link>https://www.awebdesign.ro</link>
+	<!-- Init Aweb Nexus for OC 2.3-->
+    <file path="system/engine/front.php" error="skip">
+		<operation>
+				<search><![CDATA[class Front]]></search>
+				<add position="before"><![CDATA[
+/* Aweb Nexus */
+require_once DIR_SYSTEM . 'library/aweb/nexus/Nexus.php';
+
+]]></add>
+		</operation>
+		<operation>
+				<search><![CDATA[__construct($registry)]]></search>
+				<add position="after"><![CDATA[
+	    Aweb\Nexus\Nexus::init($registry);
+]]></add>
+		</operation>
+    </file>
+    <!-- Init Aweb Nexus for OC 3.X-->
+    <file path="system/engine/router.php" error="skip">
+		<operation>
+				<search><![CDATA[class Router]]></search>
+				<add position="before"><![CDATA[
+/* Aweb Nexus */
+require_once DIR_SYSTEM . 'library/aweb/nexus/Nexus.php';
+
+]]></add>
+		</operation>
+		<operation>
+				<search><![CDATA[__construct($registry)]]></search>
+				<add position="after"><![CDATA[
+	    Aweb\Nexus\Nexus::init($registry);
+]]></add>
+		</operation>
+    </file>
+</modification>

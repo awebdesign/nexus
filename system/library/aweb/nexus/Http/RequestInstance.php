@@ -9,7 +9,7 @@ use stdClass;
 
 class RequestInstance
 {
-    private $nexus;
+    private $request;
 
     /**
      * Custom parameters.
@@ -24,8 +24,8 @@ class RequestInstance
     /**
      * @param $nexus
      */
-    public function __construct(Nexus $nexus) {
-        $this->nexus = $nexus;
+    public function __construct() {
+        $this->request = Nexus::getRegistry('request');
 
         // old post data
         if ($this->getMethod() === 'POST') {
@@ -33,15 +33,6 @@ class RequestInstance
         } else {
             $this->old = Session::get('_old', []);
         }
-    }
-
-    public function __get($prop)
-    {
-        if ($prop === 'registry') {
-            return $this->nexus->getRegistry();
-        }
-
-        return $this->nexus->getRegistry()->get($prop);
     }
 
     // Singleton methods
@@ -63,10 +54,14 @@ class RequestInstance
      * @param mixed $default
      * @return mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key = null, $default = null)
     {
-        if ($this->registry->has($key)) {
-            return $this->registry->get($key);
+        if(is_null($key)) {
+            return $this->request->get + $this->request->post + $this->attributes;
+        }
+
+        if (data_has($this->attributes, $key)) {
+            return data_get($this->attributes, $key, $default);
         }
 
         if (data_has($this->request->get, $key)) {
@@ -100,8 +95,12 @@ class RequestInstance
      * @param mixed $default
      * @return void
      */
-    public function post(string $key, $default = null)
+    public function post(string $key = null, $default = null)
     {
+        if(is_null($key)) {
+            return $this->request->post;
+        }
+
         return data_get($this->request->post, $key, $default);
     }
 

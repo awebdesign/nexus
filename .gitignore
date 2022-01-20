@@ -49,9 +49,5 @@ Thumbs.db
 *.wmv
 
 .vscode/
-system/mods/vendor/
-/module/dpd/
-/module/googleshopping/
-/old/
 /system/library/aweb/nexus/vendor/
 /system/framework.php

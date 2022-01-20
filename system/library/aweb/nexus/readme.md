@@ -1,2 +1,0 @@
-clasele de Illuminate\Support au fost adaugate manual din vechiul proiect Nexus, iar dependintele lipsa au fost adaugate manual din sursa github de la fiecare proiect
-clasele de illuminate\Support au fost prefixuite cu namespace-ul Aweb\Nexus\Support pentru a pastra psr-4 autoloader

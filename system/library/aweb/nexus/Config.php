@@ -17,7 +17,7 @@ class Config
      */
     public static function get(string $key, $default = null)
     {
-        $config = Nexus::registry('config');
+        $config = Nexus::getRegistry('config');
         if (strpos($key, '.')) {
             $path = explode('.', $key);
             $key = array_shift($path);
@@ -44,7 +44,7 @@ class Config
      */
     public static function set($key, $value = null): void
     {
-        $config = Nexus::registry('config');
+        $config = Nexus::getRegistry('config');
 
         if (is_array($key)) {
             foreach ($key as $k => $value) {
