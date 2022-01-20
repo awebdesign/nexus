@@ -5,6 +5,7 @@ use Aweb\Nexus\Request;
 use Aweb\Nexus\Session;
 use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Str;
+use Aweb\Nexus\Validator;
 
 class ControllerNexus extends Controller {
 
@@ -134,5 +135,10 @@ class ControllerNexus extends Controller {
             Lastname <input type="text" name="lastname">
             <button type="submit">Submit</button>
         </form>';
+
+        Session::set('config_admin_language', 'ro-ro');
+        Session::set('language', 'ro-ro');
+
+        Validator::getInstance();
     }
 }
