@@ -1,5 +1,6 @@
 <?php
 
+use Aweb\Nexus\Config;
 use Aweb\Nexus\Request;
 use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Str;
@@ -68,5 +69,18 @@ class ControllerNexus extends Controller {
         dump(Request::only(['nested', 'bar', 'sdasd']));
         dump(Request::except(['nested', 'bar']));
         dump(Request::query('bar'));
+
+        Config::set('foo.bar.bam', 123);
+        dump(Config::get('foo'));
+        dump(Config::get('foo.bar.bam'));
+        dump(Config::get('foo.bar.baz', 'default'));
+        dump(Config::set([
+            'a' => 1,
+            'b' => 2,
+        ]));
+        dump(Config::get('a'));
+        dump(Config::get('b'));
+
+
     }
 }
