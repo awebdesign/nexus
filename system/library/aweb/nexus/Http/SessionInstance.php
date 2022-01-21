@@ -18,13 +18,13 @@ class SessionInstance
      * @param $nexus
      */
     public function __construct() {
-        $this->session = Nexus::getRegistry('session')->data;
+        $this->session = Nexus::getRegistry('session');
 
-        if (isset($this->session[$this->flashBag])) {
-            $this->flashed = $this->session[$this->flashBag];
+        if (isset($this->session->data[$this->flashBag])) {
+            $this->flashed = $this->session->data[$this->flashBag];
         }
-print_r($this->flashed);
-        unset($this->session[$this->flashBag]);
+
+        unset($this->session->data[$this->flashBag]);
     }
 
     /**
@@ -34,7 +34,7 @@ print_r($this->flashed);
      */
     public function has(string $name)
     {
-        return data_has($this->session, $name) || data_has($this->flashed, $name);
+        return data_has($this->session->data, $name) || data_has($this->flashed, $name);
     }
 
     /**
@@ -46,7 +46,7 @@ print_r($this->flashed);
      */
     public function get(string $name, $default = null)
     {
-        return data_get($this->session, $name, function() use ($name, $default) {
+        return data_get($this->session->data, $name, function() use ($name, $default) {
             if (isset($this->flashed)) {
                 return data_get($this->flashed, $name, $default);
             }
@@ -61,7 +61,7 @@ print_r($this->flashed);
      */
     public function set(string $name, $value)
     {
-        data_set($this->session, $name, $value);
+        data_set($this->session->data, $name, $value);
     }
 
     /**
@@ -71,7 +71,7 @@ print_r($this->flashed);
      */
     public function put(string $name, $value)
     {
-        data_set($this->session, $name, $value);
+        data_set($this->session->data, $name, $value);
     }
 
     /**
@@ -81,18 +81,16 @@ print_r($this->flashed);
      */
     public function pull(string $name, $default = null)
     {
-        $val = data_get($this->session, $name, function() use ($name, $default) {
-            if (isset($this->flashed[$name])) {
-                $value = $this->flashed[$name];
-                unset($this->flashed[$name]);
-                unset($this->session[$this->flashBag][$name]);
-
-                return $value;
+        $val = data_get($this->session->data, $name, function() use ($name, $default) {
+            $val = data_get($this->flashed, $name);
+            if (!is_null($val)) {
+                Arr::forget($this->flashed, $name);
+                return $val;
             }
 
             return $default;
         });
-        unset($this->session[$name]);
+        Arr::forget($this->session->data, $name);
 
         return $val;
     }
@@ -103,9 +101,9 @@ print_r($this->flashed);
      */
     public function increment(string $name, $incrementBy = 1): int
     {
-        $val = (int) data_get($this->session, $name, 0);
+        $val = (int) data_get($this->session->data, $name, 0);
         $val += $incrementBy;
-        data_set($this->session, $name, $val);
+        data_set($this->session->data, $name, $val);
 
         return $val;
     }
@@ -116,9 +114,9 @@ print_r($this->flashed);
      */
     public function decrement(string $name, $decrementBy = 1): int
     {
-        $val = (int) data_get($this->session, $name, 0);
+        $val = (int) data_get($this->session->data, $name, 0);
         $val -= $decrementBy;
-        data_set($this->session, $name, $val);
+        data_set($this->session->data, $name, $val);
 
         return $val;
     }
@@ -130,7 +128,10 @@ print_r($this->flashed);
      */
     public function all()
     {
-        return $this->session;
+        $returned = array_merge($this->session->data, $this->flashed);
+        unset($returned[$this->flashBag]); // unset flashbag key
+
+        return $returned;
     }
 
     /**
@@ -140,8 +141,8 @@ print_r($this->flashed);
      */
     public function forget(string $name)
     {
-        unset($this->session[$name]);
-        unset($this->session[$this->flashBag][$name]);
+        Arr::forget($this->session->data, $name);
+        Arr::forget($this->flashed, $name);
     }
 
     /**
@@ -150,13 +151,12 @@ print_r($this->flashed);
     public function flush(array $names = null)
     {
         if (!$names) {
-            $this->session = [];
+            $this->session->data = [];
             $this->flashed = [];
         } else {
             foreach ($names as $name) {
-                unset($this->session[$name]);
-                unset($this->flashed[$name]);
-                unset($this->session[$this->flashBag][$name]);
+                Arr::forget($this->session->data, $name);
+                Arr::forget($this->flashed, $name);
             }
         }
     }
@@ -166,7 +166,7 @@ print_r($this->flashed);
      */
     public function getId()
     {
-        return $this->session->getId();
+        return $this->session->data->getId();
     }
 
     /**
@@ -194,7 +194,8 @@ print_r($this->flashed);
      */
     public function flash(string $name, $value = null)
     {
-        $this->session[$this->flashBag][$name] = $this->flashed[$name] = $value;
+        data_set($this->flashed, $name, $value);
+        data_set($this->session->data[$this->flashBag], $name, $value);
     }
 
     /**
@@ -204,7 +205,7 @@ print_r($this->flashed);
      */
     public function reflash()
     {
-        $this->session[$this->flashBag] = $this->flashed;
+        $this->session->data[$this->flashBag] = $this->flashed;
     }
 
     /**
@@ -220,13 +221,17 @@ print_r($this->flashed);
         }
 
         foreach ((array) $key as $k) {
-            if (array_key_exists($k, $this->flashed)) {
-                $this->session[$k] = $this->flashed[$k];
-                unset($this->flashed[$k]);
-                unset($this->session[$this->flashBag][$k]);
+            $val = data_get($this->flashed, $k);
+            if (!is_null($val)) {
+                data_set($this->session->data, $k, $val);
+                Arr::forget($this->flashed, $k);
             }
         }
     }
+
+
+
+
 
     /**
      * Flash an input array to the session.

@@ -41,6 +41,8 @@ class Nexus
         self::$registry = $registry;
 
         self::$booted = true;
+
+        self::urlPush();
     }
 
     /**
@@ -63,5 +65,28 @@ class Nexus
         }
 
         return $data;
+    }
+
+    /**
+     * keep a request url history in order to provide back() facility on request
+     *
+     * @return void
+     */
+    protected static function urlPush()
+    {
+        $current = html_entity_decode(Request::server('HTTP_REFERER'));
+        $session = Nexus::getRegistry('session');
+        if (empty($session->data['_last_url']) || !is_array($session->data['_last_url'])) {
+            $data = [];
+        } else {
+            $data = $session->data['_last_url'];
+        }
+
+        array_unshift($data, $current);
+        if (count($data) > 2) {
+            array_pop($data);
+        }
+
+        $session->data['_last_url'] = $data;
     }
 }

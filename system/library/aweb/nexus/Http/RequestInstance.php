@@ -33,7 +33,7 @@ class RequestInstance
 
         if($this->getMethod() === 'POST') {
             Session::flashInput($this->post());
-        };
+        }
     }
 
     // Singleton methods
@@ -58,7 +58,7 @@ class RequestInstance
     public function get(string $key = null, $default = null)
     {
         if(is_null($key)) {
-            return $this->request->get + $this->request->post + $this->attributes;
+            return array_merge($this->request->post, $this->request->get, $this->attributes);
         }
 
         if (data_has($this->attributes, $key)) {
@@ -400,23 +400,26 @@ class RequestInstance
      */
     public function validate(array $rules, array $messages = [], array $customAttributes = [])
     {
-        $post = $this->post();
-
-        if(empty($post)) {
-            return;
-        }
-
-        //TODO: implement $messages && $customAttributes
-        $validator = Validator::make($post, $rules);
+        $validator = Validator::make($this->get(), $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
             $errors = $validator->errors();
-            Session::flash('_errors', $errors->all());
+            Session::flash('_errors', $errors->firstOfAll());
 
-            //TODO: change if after URL class will be done!
-            echo "<script> window.location.href = window.location.href; </script>";
-            exit();
+            $this->back();
         }
+    }
+
+    /**
+     * Redirect back to url where request come from
+     *
+     * @return void
+     */
+    public function back()
+    {
+        list($url) = Session::get('_last_url');
+
+        Nexus::getRegistry('response')->redirect($url);
     }
 
 // TODO:
