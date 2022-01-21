@@ -415,11 +415,11 @@ class RequestInstance
      *
      * @return void
      */
-    public function back()
+    public function back($code = 302)
     {
         list($url) = Session::get('_last_url');
 
-        Nexus::getRegistry('response')->redirect($url);
+        Nexus::getRegistry('response')->redirect($url, $code);
     }
 
 // TODO:
