@@ -4,6 +4,7 @@ namespace Aweb\Nexus\Http;
 
 use Aweb\Nexus\Nexus;
 use Aweb\Nexus\Session;
+use Aweb\Nexus\Validator;
 use Aweb\Nexus\Support\Arr;
 use stdClass;
 
@@ -27,12 +28,12 @@ class RequestInstance
     public function __construct() {
         $this->request = Nexus::getRegistry('request');
 
-        // old post data
-        if ($this->getMethod() === 'POST') {
-            Session::flash('_old', $this->request->post);
-        } else {
-            $this->old = Session::get('_old', []);
-        }
+        // flash old data
+        $this->old = Session::getOldInput();
+
+        if($this->getMethod() === 'POST') {
+            Session::flashInput($this->post());
+        };
     }
 
     // Singleton methods
@@ -93,7 +94,7 @@ class RequestInstance
      *
      * @param string $key
      * @param mixed $default
-     * @return void
+     * @return mixed
      */
     public function post(string $key = null, $default = null)
     {
@@ -382,25 +383,40 @@ class RequestInstance
      * @param mixed $default
      * @return void
      */
-    public function getOld(string $name = '', $default = null)
+    public function old(string $name = '', $default = null)
     {
-        if ($name) {
-            return data_get($this->old, $name, $default);
-        }
-
-        return $this->old;
+        return Arr::get($this->old, $name, $default);
     }
 
     /**
-     * Get old input, aka request->post
+     * Validate the given request with the given rules.
      *
-     * @param string $name
-     * @param mixed $default
-     * @return void
+     * @param  array  $rules
+     * @param  array  $messages
+     * @param  array  $customAttributes
+     * @return array
+     *
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function old(string $name = '', $default = null)
+    public function validate(array $rules, array $messages = [], array $customAttributes = [])
     {
-        return $this->getOld($name, $default);
+        $post = $this->post();
+
+        if(empty($post)) {
+            return;
+        }
+
+        //TODO: implement $messages && $customAttributes
+        $validator = Validator::make($post, $rules);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            Session::flash('_errors', $errors->all());
+
+            //TODO: change if after URL class will be done!
+            echo "<script> window.location.href = window.location.href; </script>";
+            exit();
+        }
     }
 
 // TODO:

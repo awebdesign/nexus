@@ -3,6 +3,7 @@
 namespace Aweb\Nexus\Http;
 
 use Aweb\Nexus\Nexus;
+use Aweb\Nexus\Support\Arr;
 
 class SessionInstance
 {
@@ -17,13 +18,13 @@ class SessionInstance
      * @param $nexus
      */
     public function __construct() {
-        $this->session = Nexus::getRegistry('session');
+        $this->session = Nexus::getRegistry('session')->data;
 
-        if (isset($this->session->data[$this->flashBag])) {
-            $this->flashed = $this->session->data[$this->flashBag];
+        if (isset($this->session[$this->flashBag])) {
+            $this->flashed = $this->session[$this->flashBag];
         }
-
-        unset($this->session->data[$this->flashBag]);
+print_r($this->flashed);
+        unset($this->session[$this->flashBag]);
     }
 
     /**
@@ -33,7 +34,7 @@ class SessionInstance
      */
     public function has(string $name)
     {
-        return data_has($this->session->data, $name) || data_has($this->flashed, $name);
+        return data_has($this->session, $name) || data_has($this->flashed, $name);
     }
 
     /**
@@ -45,7 +46,7 @@ class SessionInstance
      */
     public function get(string $name, $default = null)
     {
-        return data_get($this->session->data, $name, function() use ($name, $default) {
+        return data_get($this->session, $name, function() use ($name, $default) {
             if (isset($this->flashed)) {
                 return data_get($this->flashed, $name, $default);
             }
@@ -60,7 +61,7 @@ class SessionInstance
      */
     public function set(string $name, $value)
     {
-        data_set($this->session->data, $name, $value);
+        data_set($this->session, $name, $value);
     }
 
     /**
@@ -70,7 +71,7 @@ class SessionInstance
      */
     public function put(string $name, $value)
     {
-        data_set($this->session->data, $name, $value);
+        data_set($this->session, $name, $value);
     }
 
     /**
@@ -80,18 +81,18 @@ class SessionInstance
      */
     public function pull(string $name, $default = null)
     {
-        $val = data_get($this->session->data, $name, function() use ($name, $default) {
+        $val = data_get($this->session, $name, function() use ($name, $default) {
             if (isset($this->flashed[$name])) {
                 $value = $this->flashed[$name];
                 unset($this->flashed[$name]);
-                unset($this->session->data[$this->flashBag][$name]);
+                unset($this->session[$this->flashBag][$name]);
 
                 return $value;
             }
 
             return $default;
         });
-        unset($this->session->data[$name]);
+        unset($this->session[$name]);
 
         return $val;
     }
@@ -102,9 +103,9 @@ class SessionInstance
      */
     public function increment(string $name, $incrementBy = 1): int
     {
-        $val = (int) data_get($this->session->data, $name, 0);
+        $val = (int) data_get($this->session, $name, 0);
         $val += $incrementBy;
-        data_set($this->session->data, $name, $val);
+        data_set($this->session, $name, $val);
 
         return $val;
     }
@@ -115,9 +116,9 @@ class SessionInstance
      */
     public function decrement(string $name, $decrementBy = 1): int
     {
-        $val = (int) data_get($this->session->data, $name, 0);
+        $val = (int) data_get($this->session, $name, 0);
         $val -= $decrementBy;
-        data_set($this->session->data, $name, $val);
+        data_set($this->session, $name, $val);
 
         return $val;
     }
@@ -129,7 +130,7 @@ class SessionInstance
      */
     public function all()
     {
-        return $this->session->data;
+        return $this->session;
     }
 
     /**
@@ -139,8 +140,8 @@ class SessionInstance
      */
     public function forget(string $name)
     {
-        unset($this->session->data[$name]);
-        unset($this->session->data[$this->flashBag][$name]);
+        unset($this->session[$name]);
+        unset($this->session[$this->flashBag][$name]);
     }
 
     /**
@@ -149,13 +150,13 @@ class SessionInstance
     public function flush(array $names = null)
     {
         if (!$names) {
-            $this->session->data = [];
+            $this->session = [];
             $this->flashed = [];
         } else {
             foreach ($names as $name) {
-                unset($this->session->data[$name]);
+                unset($this->session[$name]);
                 unset($this->flashed[$name]);
-                unset($this->session->data[$this->flashBag][$name]);
+                unset($this->session[$this->flashBag][$name]);
             }
         }
     }
@@ -193,7 +194,7 @@ class SessionInstance
      */
     public function flash(string $name, $value = null)
     {
-        $this->session->data[$this->flashBag][$name] = $this->flashed[$name] = $value;
+        $this->session[$this->flashBag][$name] = $this->flashed[$name] = $value;
     }
 
     /**
@@ -203,7 +204,7 @@ class SessionInstance
      */
     public function reflash()
     {
-        $this->session->data[$this->flashBag] = $this->flashed;
+        $this->session[$this->flashBag] = $this->flashed;
     }
 
     /**
@@ -220,10 +221,46 @@ class SessionInstance
 
         foreach ((array) $key as $k) {
             if (array_key_exists($k, $this->flashed)) {
-                $this->session->data[$k] = $this->flashed[$k];
+                $this->session[$k] = $this->flashed[$k];
                 unset($this->flashed[$k]);
-                unset($this->session->data[$this->flashBag][$k]);
+                unset($this->session[$this->flashBag][$k]);
             }
         }
+    }
+
+    /**
+     * Flash an input array to the session.
+     *
+     * @param  array  $value
+     * @return void
+     */
+    public function flashInput(array $value)
+    {
+        $this->flash('_old_input', $value);
+    }
+
+    /**
+     * Determine if the session contains old input.
+     *
+     * @param  string|null  $key
+     * @return bool
+     */
+    public function hasOldInput($key = null)
+    {
+        $old = $this->getOldInput($key);
+
+        return is_null($key) ? count($old) > 0 : ! is_null($old);
+    }
+
+    /**
+     * Get the requested item from the flashed input array.
+     *
+     * @param  string|null  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function getOldInput($key = null, $default = null)
+    {
+        return Arr::get($this->get('_old_input', []), $key, $default);
     }
 }

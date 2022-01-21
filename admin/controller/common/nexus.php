@@ -127,33 +127,40 @@ class ControllerCommonNexus extends Controller {
         // }
         // dump(Session::all());
 
-        // dump('old firstname', Request::getOld('firstname'));
-        // dump('old lastname', Request::getOld('lastname'));
+        dump(Session::get('_errors'));
 
-        // echo '<form method="POST" action="">
-        //     Firstname <input type="text" name="firstname">
-        //     Lastname <input type="text" name="lastname">
-        //     <button type="submit">Submit</button>
-        // </form>';
-
-        // Session::set('config_admin_language', 'ro-ro');
-        // Session::set('language', 'ro-ro');
-
-        $validator = Validator::make(Request::post(), [
+        Request::validate([
             'firstname' => 'required|max:255',
             'lastname' => 'required',
         ]);
 
-        // /* TODO: get field names from last loaded OC lang file
-        // * else use it as:
-        // * $validation->setAlias('province_id', 'Province');
-        // * $validation->setAlias('district_id', 'District');
-        // */
+        // dump('old firstname', Request::old('firstname'));
+        // dump('old lastname', Request::old('lastname'));
 
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            print_r($errors->firstOfAll());
-        }
+        echo '<form method="POST" action="">
+            Firstname <input type="text" name="firstname" value="' . Request::old('firstname') . '">
+            Lastname <input type="text" name="lastname">
+            <button type="submit">Submit</button>
+        </form>';
+
+        // Session::set('config_admin_language', 'ro-ro');
+        // Session::set('language', 'ro-ro');
+
+        // $validator = Validator::make(Request::post(), [
+        //     'firstname' => 'required|max:255',
+        //     'lastname' => 'required',
+        // ]);
+
+        // // /* TODO: get field names from last loaded OC lang file
+        // // * else use it as:
+        // // * $validation->setAlias('province_id', 'Province');
+        // // * $validation->setAlias('district_id', 'District');
+        // // */
+
+        // if ($validator->fails()) {
+        //     $errors = $validator->errors();
+        //     print_r($errors->firstOfAll());
+        // }
 
         //TODO: DD throws error 500
     }
