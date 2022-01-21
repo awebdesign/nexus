@@ -290,3 +290,20 @@ if (! function_exists('config')) {
         return Config::get($key, $default);
     }
 }
+
+if (! function_exists('error')) {
+    /**
+     * Get error if key given, or get all errors if null given
+     *
+     * @param string|null $key
+     * @return string
+     */
+    function error(string $key = null)
+    {
+        if (is_null($key)) {
+            return Session::get('_errors');
+        }
+
+        return Session::get('_errors.'.$key);
+    }
+}
