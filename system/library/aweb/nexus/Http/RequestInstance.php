@@ -37,6 +37,14 @@ class RequestInstance
     }
 
     // Singleton methods
+
+
+
+    /**
+     * Get current request method
+     *
+     * @return string
+     */
     public function method(): string
     {
         return strtoupper($this->request->server['REQUEST_METHOD']);

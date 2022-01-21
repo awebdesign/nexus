@@ -11,7 +11,7 @@ class Validator
     protected static $instance;
     protected static $lang = [];
 
-    public static function getInstance()
+    public static function getInstance(): ValidationValidator
     {
         if (!self::$instance) {
             $instance = new ValidationValidator();

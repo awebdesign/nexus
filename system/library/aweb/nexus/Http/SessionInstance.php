@@ -75,7 +75,7 @@ class SessionInstance
     }
 
     /**
-     * Sets an attribute. Dot notation NOT supported
+     * Retrieve an attribute then remove it from session. Dot notation allowed
      *
      * @param mixed $value
      */
