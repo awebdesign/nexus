@@ -130,7 +130,6 @@ class RequestInstance
      */
     public function isSecure(): bool
     {
-        // todo: ask. luat de la interlink
         return isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'));
     }
 

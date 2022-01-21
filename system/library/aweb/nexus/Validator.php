@@ -4,7 +4,6 @@ namespace Aweb\Nexus;
 
 use Rakit\Validation\Validator as ValidationValidator;
 use Rakit\Validation\Validation;
-use ReflectionClass;
 
 class Validator
 {
@@ -23,7 +22,6 @@ class Validator
         return self::$instance;
     }
 
-    //TODO: documentat hardcodarea cu faptul ca, campurile se traduc pe sablonul din lang-> incarcat precedent: entry_{input name}
     public static function make(array $inputs, array $rules, array $messages = [], array $customAttributes = []): Validation
     {
         $validator = self::getInstance();

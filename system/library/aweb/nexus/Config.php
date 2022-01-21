@@ -58,7 +58,7 @@ class Config
             $path = explode('.', $key);
             $key = array_shift($path);
             $path = implode('.', $path);
-            $data = [];
+            $data = self::get($key, []);
             Arr::set($data, $path, $value);
             $config->set($key, $data);
         } else {

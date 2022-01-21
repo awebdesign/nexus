@@ -564,31 +564,31 @@ class Str
      *
      * @return \Ramsey\Uuid\UuidInterface
      */
-    public static function uuid()
-    {
-        return Uuid::uuid4();
-    }
+    // public static function uuid()
+    // {
+    //     return Uuid::uuid4();
+    // }
 
-    /**
-     * Generate a time-ordered UUID (version 4).
-     *
-     * @return \Ramsey\Uuid\UuidInterface
-     */
-    public static function orderedUuid()
-    {
-        $factory = new UuidFactory;
+    // /**
+    //  * Generate a time-ordered UUID (version 4).
+    //  *
+    //  * @return \Ramsey\Uuid\UuidInterface
+    //  */
+    // public static function orderedUuid()
+    // {
+    //     $factory = new UuidFactory;
 
-        $factory->setRandomGenerator(new CombGenerator(
-            $factory->getRandomGenerator(),
-            $factory->getNumberConverter()
-        ));
+    //     $factory->setRandomGenerator(new CombGenerator(
+    //         $factory->getRandomGenerator(),
+    //         $factory->getNumberConverter()
+    //     ));
 
-        $factory->setCodec(new TimestampFirstCombCodec(
-            $factory->getUuidBuilder()
-        ));
+    //     $factory->setCodec(new TimestampFirstCombCodec(
+    //         $factory->getUuidBuilder()
+    //     ));
 
-        return $factory->uuid4();
-    }
+    //     return $factory->uuid4();
+    // }
 
     /**
      * Returns the replacements for the ascii method.
