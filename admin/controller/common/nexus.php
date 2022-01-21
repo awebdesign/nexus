@@ -2,6 +2,7 @@
 
 use Aweb\Nexus\Config;
 use Aweb\Nexus\Request;
+use Aweb\Nexus\Route;
 use Aweb\Nexus\Session;
 use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Str;
@@ -157,6 +158,11 @@ class ControllerCommonNexus extends Controller {
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>';
+
+        dump(Route::link('foo/bar', ['foo' => 123]));
+        dump(
+            Route::link('foo/bar', ['foo' => 123], Route::CATALOG)
+        );
 
         // Session::set('config_admin_language', 'ro-ro');
         // Session::set('language', 'ro-ro');
