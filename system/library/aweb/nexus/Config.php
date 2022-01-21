@@ -3,6 +3,7 @@
 namespace Aweb\Nexus;
 
 use Aweb\Nexus\Support\Arr;
+use Exception;
 
 class Config
 {
@@ -63,6 +64,24 @@ class Config
         } else {
             $config->set($key, $value);
         }
+    }
+
+    /**
+     * call opencart model_setting_setting->getSetting($code). Returns array of settings for module_code, or empty array if none found
+     *
+     * @param string $code
+     * @return array
+     */
+    public static function all(string $code)
+    {
+        // check if model loaded
+        try {
+            Nexus::getRegistry('model_setting_setting');
+        } catch(Exception $e) {
+            Nexus::getRegistry('load')->model('setting/setting');
+        }
+
+        return Nexus::getRegistry('model_setting_setting')->getSetting($code);
     }
 
     // private
