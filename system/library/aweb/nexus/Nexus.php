@@ -74,7 +74,11 @@ class Nexus
      */
     protected static function urlPush()
     {
-        $current = html_entity_decode(Request::server('HTTP_REFERER'));
+        // compose current url
+        $protocol = ((!empty(Request::server('HTTPS')) && Request::server('HTTPS') != 'off') || Request::server('SERVER_PORT') == 443) ? "https://" : "http://";
+        $current = $protocol . Request::server('HTTP_HOST') . Request::server('REQUEST_URI');
+        $current = html_entity_decode($current);
+
         $session = Nexus::getRegistry('session');
         if (empty($session->data['_last_url']) || !is_array($session->data['_last_url'])) {
             $data = [];
