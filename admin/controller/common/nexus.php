@@ -12,6 +12,7 @@ class ControllerCommonNexus extends Controller {
     public function index()
     {
 
+
         // if (Request::get('flush')) {
         //     Session::flush();
         // }
@@ -127,20 +128,34 @@ class ControllerCommonNexus extends Controller {
         // }
         // dump(Session::all());
 
-        dump(Session::get('_errors'));
+        Config::set('config_admin_language', 'ro-ro');
+        Session::set('language', 'ro-ro');
 
-        Request::validate([
-            'firstname' => 'required|max:255',
-            'lastname' => 'required',
-        ]);
+        $this->load->language('customer/customer');
+        if (Request::method() === 'POST') {
+            Request::validate([
+                'firstname' => 'required|max:255',
+                'lastname' => 'required',
+            ]);
+        }
 
         // dump('old firstname', Request::old('firstname'));
         // dump('old lastname', Request::old('lastname'));
-
+        Session::get('_errors');
         echo '<form method="POST" action="">
-            Firstname <input type="text" name="firstname" value="' . Request::old('firstname') . '">
-            Lastname <input type="text" name="lastname">
-            <button type="submit">Submit</button>
+            <div class="form-group">
+                <label>
+                    Firstname <input type="text" name="firstname" class="form-control" value="' . Request::old('firstname') . '">
+                </label>
+                <div class="text-danger">'. error('firstname') .'</div>
+            </div>
+            <div class="form-group">
+                <label>
+                    Lastname <input type="text" name="lastname" class="form-control" value="' . Request::old('lastname') . '">
+                </label>
+                <div class="text-danger">'. error('lastname') .'</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>';
 
         // Session::set('config_admin_language', 'ro-ro');
@@ -150,12 +165,6 @@ class ControllerCommonNexus extends Controller {
         //     'firstname' => 'required|max:255',
         //     'lastname' => 'required',
         // ]);
-
-        // // /* TODO: get field names from last loaded OC lang file
-        // // * else use it as:
-        // // * $validation->setAlias('province_id', 'Province');
-        // // * $validation->setAlias('district_id', 'District');
-        // // */
 
         // if ($validator->fails()) {
         //     $errors = $validator->errors();
