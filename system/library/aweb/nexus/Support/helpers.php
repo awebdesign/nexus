@@ -5,6 +5,7 @@ use Aweb\Nexus\Request;
 use Aweb\Nexus\Session;
 use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Collection;
+use Aweb\Nexus\Support\HigherOrderTapProxy;
 
 if (! function_exists('collect')) {
     /**
@@ -305,5 +306,25 @@ if (! function_exists('error')) {
         }
 
         return Session::get('_errors.'.$key);
+    }
+}
+
+if (! function_exists('tap')) {
+    /**
+     * Call the given Closure with the given value then return the value.
+     *
+     * @param  mixed  $value
+     * @param  callable|null  $callback
+     * @return mixed
+     */
+    function tap($value, $callback = null)
+    {
+        if (is_null($callback)) {
+            return new HigherOrderTapProxy($value);
+        }
+
+        $callback($value);
+
+        return $value;
     }
 }

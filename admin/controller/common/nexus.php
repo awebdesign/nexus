@@ -7,12 +7,29 @@ use Aweb\Nexus\Session;
 use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Str;
 use Aweb\Nexus\Validator;
+use Aweb\Nexus\Db;
 
 class ControllerCommonNexus extends Controller {
 
     public function index()
     {
 
+
+        $results = Db::from('setting')->where('setting_id', 1)->first();
+        pre($results->code);
+
+        $results = Db::select('select setting_id, code from ' . DB_PREFIX . 'setting where setting_id = ?', [1]);
+        pre($results);
+
+        $results = DB::table('setting')->count();
+        pre($results);
+
+        $orders = DB::table('setting')
+                ->select('code', DB::raw('COUNT(setting_id) as total_ids'))
+                ->groupBy('code')
+                ->havingRaw('count(total_ids) > ?', [5])
+                ->get();
+        dd($orders);
 
         // if (Request::get('flush')) {
         //     Session::flush();
