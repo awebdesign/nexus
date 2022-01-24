@@ -14,6 +14,12 @@ class ControllerCommonNexus extends Controller {
     public function index()
     {
 
+        DB::table('setting')->insert([
+            'code' => 'test_db',
+            'serialized' => 0
+        ]);
+
+        DB::table('setting')->increment('code');
 
         $results = Db::from('setting')->where('setting_id', 1)->first();
         pre($results->code);

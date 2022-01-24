@@ -3,7 +3,7 @@
 namespace Aweb\Nexus;
 
 use Aweb\Nexus\Http\SessionInstance;
-use Exception;
+use RuntimeException;
 
 /**
  * @method static bool has(string $name) Checks if an attribute is defined. Dot notation allowed
@@ -29,18 +29,15 @@ use Exception;
 
 class Session
 {
-    /**
-     * Opencart registry
-     */
     protected static $instance;
 
     /**
-     * SET OpenCart registry as core
+     * Empty constructor
      */
     private function __construct() {}
 
     /**
-     * SET OpenCart registry as core, called only once
+     * Get Session instance
      */
     public static function getInstance()
     {
@@ -54,7 +51,7 @@ class Session
     public static function __callStatic($name, $arguments = [])
     {
         if (!method_exists(self::getInstance(), $name)) {
-            throw new Exception("Method $name does not exists on ". get_class(self::getInstance()));
+            throw new RuntimeException("Method $name does not exists on ". get_class(self::getInstance()));
         }
 
         return call_user_func_array([self::getInstance(), $name], $arguments);

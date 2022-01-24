@@ -10,6 +10,11 @@ class Validator
     protected static $instance;
     protected static $lang = [];
 
+    /**
+     * Get Validator instance
+     *
+     * @return ValidationValidator
+     */
     public static function getInstance(): ValidationValidator
     {
         if (!self::$instance) {
@@ -49,6 +54,12 @@ class Validator
         return $validation;
     }
 
+    /**
+     * Load local language
+     *
+     * @param ValidationValidator $validator
+     * @return ValidationValidator
+     */
     protected static function loadLang($validator)
     {
         if (defined('DIR_CATALOG')) {

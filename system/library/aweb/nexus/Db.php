@@ -2,7 +2,7 @@
 
 namespace Aweb\Nexus;
 
-use Exception;
+use RuntimeException;
 use Aweb\Nexus\Database\Connection;
 
 
@@ -16,11 +16,16 @@ class Db
     private function __construct() {}
 
     /**
-     * SET OpenCart registry as core, called only once
+     * Get DB instance
      */
     public static function getInstance(): Connection
     {
         if (!self::$instance) {
+
+            if(!class_exists('Aweb\Nexus\Database\PdoAdapter')) {
+                throw new RuntimeException('Nexus PdoAdapter was not loaded! Check ocmod file.');
+            }
+
             $db = Nexus::getRegistry('db');
             $pdo = $db->getActiveConnection();
             self::$instance = new Connection($pdo, DB_PREFIX);
@@ -32,7 +37,7 @@ class Db
     public static function __callStatic($name, $arguments = [])
     {
         if (!method_exists(self::getInstance(), $name)) {
-            throw new Exception("Method $name does not exists on ". get_class(self::getInstance()));
+            throw new RuntimeException("Method $name does not exists on ". get_class(self::getInstance()));
         }
 
         // set OC table prefix

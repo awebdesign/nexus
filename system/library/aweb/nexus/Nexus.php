@@ -8,7 +8,7 @@
 
 namespace Aweb\Nexus;
 
-use Exception;
+use RuntimeException;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +29,9 @@ class Nexus
     private static $registry;
     private static $booted;
 
-    // single instance only
+    /**
+     * Empty constructor
+     */
     private function __construct() {}
 
     public static function init($registry)
@@ -46,7 +48,7 @@ class Nexus
     }
 
     /**
-     * Retrieves the OpenCart registry
+     * Retrieves the Nexus instance which has access to OC registry
      *
      * @return object
      */
@@ -61,7 +63,7 @@ class Nexus
         $data = $registry->get($type);
 
         if(is_null($data)) {
-            throw new Exception("There is not registry instance for {$type}");
+            throw new RuntimeException("There is not registry instance for {$type}");
         }
 
         return $data;

@@ -3,7 +3,7 @@
 namespace Aweb\Nexus;
 
 use Aweb\Nexus\Support\Arr;
-use Exception;
+use RuntimeException;
 
 class Config
 {
@@ -77,7 +77,7 @@ class Config
         // check if model loaded
         try {
             Nexus::getRegistry('model_setting_setting');
-        } catch(Exception $e) {
+        } catch(RuntimeException $e) {
             Nexus::getRegistry('load')->model('setting/setting');
         }
 

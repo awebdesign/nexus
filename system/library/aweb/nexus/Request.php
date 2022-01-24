@@ -3,7 +3,7 @@
 namespace Aweb\Nexus;
 
 use Aweb\Nexus\Http\RequestInstance;
-use Exception;
+use RuntimeException;
 
 /**
  * @method static string method() Get current request method
@@ -46,12 +46,12 @@ class Request
     protected static $instance;
 
     /**
-     * SET OpenCart registry as core
+     * Empty constructor
      */
     private function __construct() {}
 
     /**
-     * SET OpenCart registry as core, called only once
+     * Get Request instance
      */
     public static function getInstance(): RequestInstance
     {
@@ -65,7 +65,7 @@ class Request
     public static function __callStatic($name, $arguments = [])
     {
         if (!method_exists(self::getInstance(), $name)) {
-            throw new Exception("Method $name does not exists on ". get_class(self::getInstance()));
+            throw new RuntimeException("Method $name does not exists on ". get_class(self::getInstance()));
         }
 
         return call_user_func_array([self::getInstance(), $name], $arguments);
