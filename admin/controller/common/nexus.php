@@ -30,6 +30,26 @@ class ControllerCommonNexus extends Controller {
         $results = DB::table('setting')->count();
         pre($results);
 
+        $cursor = DB::table('setting')
+        ->select('code', DB::raw('COUNT(setting_id) as total_ids'))
+        ->groupBy('code')
+        ->havingRaw('count(total_ids) > ?', [1])
+        ->cursor();
+        foreach ($cursor as $e) {
+            pre($e);
+        }
+
+        $test = DB::table('zone')->where('zone_id', '>', '50')->limit(5)->pluck('name', 'code')->toJson();
+        pre($test);
+
+        DB::table('setting')->select('code')->orderBy('setting_id')->groupBy('code')->chunk(5, function($settings)
+        {
+            foreach ($settings as $setting)
+            {
+                pre($setting);
+            }
+        });
+
         $orders = DB::table('setting')
                 ->select('code', DB::raw('COUNT(setting_id) as total_ids'))
                 ->groupBy('code')

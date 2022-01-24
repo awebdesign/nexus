@@ -15,6 +15,15 @@ final class PdoAdapter {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, //Triggers Errors
     ];
 
+    /**
+     * Opencart PDO database driver
+     *
+     * @param string $hostname
+     * @param string $username
+     * @param string $password
+     * @param string $database
+     * @param string $port
+     */
 	public function __construct($hostname, $username, $password, $database, $port = '3306') {
 		try {
 			$this->connection = new \PDO("mysql:host=" . $hostname . ";port=" . $port . ";dbname=" . $database, $username, $password, $this->options);
@@ -103,10 +112,21 @@ final class PdoAdapter {
 		}
 	}
 
+    /**
+     * Opencart default escape method
+     *
+     * @param mixed $value
+     * @return void
+     */
 	public function escape($value) {
 		return str_replace(array("\\", "\0", "\n", "\r", "\x1a", "'", '"'), array("\\\\", "\\0", "\\n", "\\r", "\Z", "\'", '\"'), $value);
 	}
 
+    /**
+     * Affected rows
+     *
+     * @return int
+     */
 	public function countAffected() {
 		if ($this->statement) {
 			return $this->statement->rowCount();
@@ -115,10 +135,20 @@ final class PdoAdapter {
 		}
 	}
 
+    /**
+     * Last inserted ID
+     *
+     * @return string|false
+     */
 	public function getLastId() {
 		return $this->connection->lastInsertId();
 	}
 
+    /**
+     * Connection checking method
+     *
+     * @return boolean
+     */
 	public function isConnected() {
 		if ($this->connection) {
 			return true;
@@ -131,6 +161,11 @@ final class PdoAdapter {
 		$this->connection = null;
 	}
 
+    /**
+     * Connection link shared
+     *
+     * @return void
+     */
     public function shareConnection() {
 		return $this->connection;
 	}
