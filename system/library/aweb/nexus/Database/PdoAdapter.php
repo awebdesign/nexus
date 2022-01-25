@@ -98,7 +98,7 @@ final class PdoAdapter {
                 /**
                  * Get FETCH_ASSOC if the query is a SELECT or a SHOW command
                  */
-                $queryType = strtolower(substr($this->statement->queryString, 0, 6));
+                $queryType = strtolower(substr(trim($this->statement->queryString), 0, 6));
                 if(in_array($queryType, ['select', 'show t'])) {
                     while ($row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
 					    $data[] = $row;
