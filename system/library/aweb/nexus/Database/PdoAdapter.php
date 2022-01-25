@@ -9,10 +9,19 @@ final class PdoAdapter {
 	private $connection = null;
 	private $statement = null;
     private $charset = 'utf8'; //original was: utf8
-    private $collation = 'utf8_unicode_ci';//original was: utf8_general_ci
+    private $collation = 'utf8_general_ci';//original was: utf8_general_ci
     private $options = [
         //PDO::ATTR_PERSISTENT => true,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, //Triggers Errors
+
+        //PDO::ATTR_CASE => PDO::CASE_NATURAL,
+        //PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        //PDO::ATTR_ORACLE_NULLS => PDO::NULL_NATURAL,
+        //PDO::ATTR_STRINGIFY_FETCHES => false,
+        //PDO::ATTR_EMULATE_PREPARES => false,
+        //PDO::ATTR_PERSISTENT => false,
+        //PDO::MYSQL_ATTR_SSL_CA => false
+        //PDO::MYSQL_ATTR_SSL_CA => false,
     ];
 
     /**
@@ -40,7 +49,7 @@ final class PdoAdapter {
 		//$this->connection->exec("SET CHARACTER SET {$this->charset}");
 		//$this->connection->exec("SET CHARACTER_SET_CONNECTION={$this->charset}");
 		$this->connection->exec("SET SQL_MODE = ''");
-
+        //$this->connection->prepare("set session sql_mode='NO_ENGINE_SUBSTITUTION'")->execute();
         if (defined('DB_TIMEZONE')) {
             $this->connection->prepare('set time_zone="' . DB_TIMEZONE . '"')->execute();
         }
@@ -86,7 +95,11 @@ final class PdoAdapter {
 			if ($this->statement && $this->statement->execute($params)) {
 				$data = array();
 
-                if(substr($this->statement->queryString, 0, 6) == 'SELECT') {
+                /**
+                 * Get FETCH_ASSOC if the query is a SELECT or a SHOW command
+                 */
+                $queryType = strtolower(substr($this->statement->queryString, 0, 6));
+                if(in_array($queryType, ['select', 'show t'])) {
                     while ($row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
 					    $data[] = $row;
 				    }

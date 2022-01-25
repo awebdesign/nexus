@@ -41,8 +41,12 @@ require_once DIR_SYSTEM . 'library/aweb/nexus/Nexus.php';
     </file>
 	<file path="system/library/db.php">
 		<operation>
-			<search><![CDATA[$class = 'DB\\' . $adaptor;]]></search>
-			<add position="after"><![CDATA[
+			<search><![CDATA[class_exists($class)]]></search>
+			<add position="before"><![CDATA[
+		if(isset($driver)) {
+			$adaptor = $driver; //OC 2.1 FIX
+		}
+
         /* Aweb Nexus */
         if(in_array(strtolower($adaptor), ['mysqli', 'mysql', 'mpdo'])) {
             $class = 'Aweb\\Nexus\\Database\\PdoAdapter';
@@ -50,11 +54,12 @@ require_once DIR_SYSTEM . 'library/aweb/nexus/Nexus.php';
     ]]></add>
 		</operation>
 		<operation>
-			<search><![CDATA[public function connected() {]]></search>
+			<search><![CDATA[function query]]></search>
 			<add position="before"><![CDATA[
     /* Aweb Nexus */
     public function getActiveConnection() {
-		return $this->adaptor->shareConnection();
+		$instance = isset($this->db) ? $this->db : $this->adapter; //OC 2.1 FIX
+		return $instance->shareConnection();
 	}]]></add>
         </operation>
 	</file>
