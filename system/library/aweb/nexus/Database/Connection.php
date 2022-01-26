@@ -18,6 +18,7 @@ use Aweb\Nexus\Database\Query\Builder as QueryBuilder;
 use Aweb\Nexus\Database\Schema\Builder as SchemaBuilder;
 use Aweb\Nexus\Database\Query\Grammars\Grammar as QueryGrammar;
 use Aweb\Nexus\Nexus;
+use Aweb\Nexus\Support\Str;
 
 class Connection implements ConnectionInterface
 {
@@ -1142,6 +1143,23 @@ class Connection implements ConnectionInterface
      */
     public function getQueryLog()
     {
+        foreach($this->queryLog as &$log) {
+            $prep = $log['query'];
+            foreach ($log['bindings'] as $binding) {
+                if (is_bool($binding)) {
+                    $val = $binding === true ? 'TRUE' : 'FALSE';
+                } else if (is_numeric($binding)) {
+                    $val = $binding;
+                } else {
+                    $val = "'$binding'";
+                }
+
+                $prep = preg_replace("#\?#", $val, $prep, 1);
+            }
+            $log['query'] = $prep;
+            unset($log['bindings']);
+        }
+
         return $this->queryLog;
     }
 

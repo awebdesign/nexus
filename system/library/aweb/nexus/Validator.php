@@ -2,8 +2,7 @@
 
 namespace Aweb\Nexus;
 
-use Rakit\Validation\Validator as ValidationValidator;
-use Rakit\Validation\Validation;
+use Aweb\Nexus\Validation\Validator as ValidatorInstance;
 
 class Validator
 {
@@ -13,12 +12,12 @@ class Validator
     /**
      * Get Validator instance
      *
-     * @return ValidationValidator
+     * @return ValidatorInstance
      */
-    public static function getInstance(): ValidationValidator
+    public static function getInstance(): ValidatorInstance
     {
         if (!self::$instance) {
-            $instance = new ValidationValidator();
+            $instance = new ValidatorInstance();
             self::loadLang($instance);
 
             self::$instance = $instance;
@@ -27,7 +26,7 @@ class Validator
         return self::$instance;
     }
 
-    public static function make(array $inputs, array $rules, array $messages = [], array $customAttributes = []): Validation
+    public static function make(array $inputs, array $rules, array $messages = [], array $customAttributes = [])
     {
         $validator = self::getInstance();
         $validation = $validator->make($inputs, $rules, $messages);
@@ -35,7 +34,7 @@ class Validator
         // get oc translation keys.
         // foreach validated attribute, we check if $customAttributes provided, else check in oc translations.
         $languageKeys = Nexus::getRegistry('language')->all();
-        foreach ($inputs as $name => $val) {
+        foreach ($rules as $name => $val) {
             if (isset($customAttributes[$name])) {
                 $validation->setAlias($name, $customAttributes[$name]);
             }
@@ -57,8 +56,8 @@ class Validator
     /**
      * Load local language
      *
-     * @param ValidationValidator $validator
-     * @return ValidationValidator
+     * @param ValidatorInstance $validator
+     * @return ValidatorInstance
      */
     protected static function loadLang($validator)
     {
@@ -73,6 +72,7 @@ class Validator
             $lang = null;
             switch($language_code) {
                 case 'ro-ro':
+                case 'ro':
                 case 'romana':
                 case 'romanian':
                     $lang  = 'romanian';
@@ -80,7 +80,7 @@ class Validator
             }
 
             if ($lang) {
-                $lang_file = realpath(__DIR__."/lang/{$lang}.php");
+                $lang_file = realpath(__DIR__."/Validation/lang/{$lang}.php");
                 if (file_exists($lang_file)) {
                     self::$lang[$language_code] = require_once($lang_file);
                 }

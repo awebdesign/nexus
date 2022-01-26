@@ -15,13 +15,12 @@ final class PdoAdapter {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, //Triggers Errors
 
         //PDO::ATTR_CASE => PDO::CASE_NATURAL,
-        //PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         //PDO::ATTR_ORACLE_NULLS => PDO::NULL_NATURAL,
         //PDO::ATTR_STRINGIFY_FETCHES => false,
         //PDO::ATTR_EMULATE_PREPARES => false,
         //PDO::ATTR_PERSISTENT => false,
-        //PDO::MYSQL_ATTR_SSL_CA => false
         //PDO::MYSQL_ATTR_SSL_CA => false,
+        //PDO::ATTR_EMULATE_PREPARES,
     ];
 
     /**
@@ -67,24 +66,24 @@ final class PdoAdapter {
 		}
 	}
 
-	public function execute() {
-		try {
-			if ($this->statement && $this->statement->execute()) {
-				$data = array();
+	// public function execute() {
+	// 	try {
+	// 		if ($this->statement && $this->statement->execute()) {
+	// 			$data = array();
 
-				while ($row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
-					$data[] = $row;
-				}
+	// 			while ($row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
+	// 				$data[] = $row;
+	// 			}
 
-				$result = new \stdClass();
-				$result->row = (isset($data[0])) ? $data[0] : array();
-				$result->rows = $data;
-				$result->num_rows = $this->statement->rowCount();
-			}
-		} catch(\PDOException $e) {
-			throw new \Exception('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
-		}
-	}
+	// 			$result = new \stdClass();
+	// 			$result->row = (isset($data[0])) ? $data[0] : array();
+	// 			$result->rows = $data;
+	// 			$result->num_rows = $this->statement->rowCount();
+	// 		}
+	// 	} catch(\PDOException $e) {
+	// 		throw new \Exception('Error: ' . $e->getMessage() . ' Error Code : ' . $e->getCode());
+	// 	}
+	// }
 
 	public function query($sql, $params = array()) {
 		$this->statement = $this->connection->prepare($sql);

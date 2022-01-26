@@ -292,23 +292,6 @@ if (! function_exists('config')) {
     }
 }
 
-if (! function_exists('error')) {
-    /**
-     * Get error if key given, or get all errors if null given
-     *
-     * @param string|null $key
-     * @return string
-     */
-    function error(string $key = null)
-    {
-        if (is_null($key)) {
-            return Session::get('_errors');
-        }
-
-        return Session::get('_errors.'.$key);
-    }
-}
-
 if (! function_exists('tap')) {
     /**
      * Call the given Closure with the given value then return the value.

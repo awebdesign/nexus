@@ -34,7 +34,7 @@ class SessionInstance
      */
     public function has(string $name)
     {
-        return data_has($this->session->data, $name) || data_has($this->flashed, $name);
+        return Arr::has($this->session->data, $name) || Arr::has($this->flashed, $name);
     }
 
     /**
@@ -46,9 +46,9 @@ class SessionInstance
      */
     public function get(string $name, $default = null)
     {
-        return data_get($this->session->data, $name, function() use ($name, $default) {
+        return Arr::get($this->session->data, $name, function() use ($name, $default) {
             if (isset($this->flashed)) {
-                return data_get($this->flashed, $name, $default);
+                return Arr::get($this->flashed, $name, $default);
             }
             return $default;
         });
@@ -61,7 +61,7 @@ class SessionInstance
      */
     public function set(string $name, $value)
     {
-        data_set($this->session->data, $name, $value);
+        Arr::set($this->session->data, $name, $value);
     }
 
     /**
@@ -71,7 +71,7 @@ class SessionInstance
      */
     public function put(string $name, $value)
     {
-        data_set($this->session->data, $name, $value);
+        Arr::set($this->session->data, $name, $value);
     }
 
     /**
@@ -81,8 +81,8 @@ class SessionInstance
      */
     public function pull(string $name, $default = null)
     {
-        $val = data_get($this->session->data, $name, function() use ($name, $default) {
-            $val = data_get($this->flashed, $name);
+        $val = Arr::get($this->session->data, $name, function() use ($name, $default) {
+            $val = Arr::get($this->flashed, $name);
             if (!is_null($val)) {
                 Arr::forget($this->flashed, $name);
                 return $val;
@@ -101,9 +101,9 @@ class SessionInstance
      */
     public function increment(string $name, $incrementBy = 1): int
     {
-        $val = (int) data_get($this->session->data, $name, 0);
+        $val = (int) Arr::get($this->session->data, $name, 0);
         $val += $incrementBy;
-        data_set($this->session->data, $name, $val);
+        Arr::set($this->session->data, $name, $val);
 
         return $val;
     }
@@ -114,9 +114,9 @@ class SessionInstance
      */
     public function decrement(string $name, $decrementBy = 1): int
     {
-        $val = (int) data_get($this->session->data, $name, 0);
+        $val = (int) Arr::get($this->session->data, $name, 0);
         $val -= $decrementBy;
-        data_set($this->session->data, $name, $val);
+        Arr::set($this->session->data, $name, $val);
 
         return $val;
     }
@@ -166,7 +166,7 @@ class SessionInstance
      */
     public function getId()
     {
-        return $this->session->data->getId();
+        return $this->session->getId();
     }
 
     /**
@@ -194,8 +194,8 @@ class SessionInstance
      */
     public function flash(string $name, $value = null)
     {
-        data_set($this->flashed, $name, $value);
-        data_set($this->session->data[$this->flashBag], $name, $value);
+        Arr::set($this->flashed, $name, $value);
+        Arr::set($this->session->data[$this->flashBag], $name, $value);
     }
 
     /**
@@ -221,9 +221,9 @@ class SessionInstance
         }
 
         foreach ((array) $key as $k) {
-            $val = data_get($this->flashed, $k);
+            $val = Arr::get($this->flashed, $k);
             if (!is_null($val)) {
-                data_set($this->session->data, $k, $val);
+                Arr::set($this->session->data, $k, $val);
                 Arr::forget($this->flashed, $k);
             }
         }
@@ -267,5 +267,44 @@ class SessionInstance
     public function getOldInput($key = null, $default = null)
     {
         return Arr::get($this->get('_old_input', []), $key, $default);
+    }
+
+    /**
+     * $this->session->data['_errors'][] = $val | return $this->session->data['_errors']
+     */
+    public function errors(string $key, $val = null)
+    {
+        if ($val) {
+            $this->flash('_errors.'.$key, $val);
+        }
+        else {
+            $this->get('_errors.'.$key, []);
+        }
+    }
+
+    /**
+     * $this->session->data['_warning'][] = $val | return $this->session->data['_warning']
+     */
+    public function warning(string $key, $val = null)
+    {
+        if ($val) {
+            $this->flash('_warning.'.$key, $val);
+        }
+        else {
+            $this->get('_warning.'.$key, []);
+        }
+    }
+
+    /**
+     * $this->session->data['_success'][] = $val | return $this->session->data['_success']
+     */
+    public function success(string $key, $val = null)
+    {
+        if ($val) {
+            $this->flash('_success.'.$key, $val);
+        }
+        else {
+            $this->get('_success.'.$key, []);
+        }
     }
 }

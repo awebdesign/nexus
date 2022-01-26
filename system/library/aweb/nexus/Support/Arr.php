@@ -582,6 +582,40 @@ class Arr
     }
 
     /**
+     * Check if a given ket is isset using dot notation
+     *
+     * @param [type] $target
+     * @param [type] $key
+     * @return boolean
+     */
+    public static function data_has($target, $key): bool
+    {
+        if (is_null($key)) {
+            return false;
+        }
+
+        $key = is_array($key) ? $key : explode('.', $key);
+
+        foreach ($key as $i => $segment) {
+            unset($key[$i]);
+
+            if (is_null($segment)) {
+                return false;
+            }
+
+            if (Arr::accessible($target) && Arr::exists($target, $segment)) {
+                $target = $target[$segment];
+            } elseif (is_object($target) && isset($target->{$segment})) {
+                $target = $target->{$segment};
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Set an array item to a given value using "dot" notation.
      *
      * If no key is given to the method, the entire array will be replaced.
