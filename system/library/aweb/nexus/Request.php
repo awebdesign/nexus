@@ -37,7 +37,9 @@ use RuntimeException;
  * @method static mixed old(string $name = '', $default = null) Get old input, aka request->post
  * @method static void validate(array $rules, array $messages = [], array $customAttributes = []) Validate the given request with the given rules.
  * @method static void back($code = 302) Redirect back to url where request come from
+ * @method static array files($key = null) retrievs the given file, or all files from OC $this->reques->files
  */
+
 class Request
 {
     /**

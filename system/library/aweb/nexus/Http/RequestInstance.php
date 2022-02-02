@@ -66,19 +66,23 @@ class RequestInstance
     public function get(string $key = null, $default = null)
     {
         if(is_null($key)) {
-            return array_merge($this->request->post, $this->request->get, $this->attributes);
+            return array_merge($this->request->files, $this->request->post, $this->request->get, $this->attributes);
         }
 
-        if (data_has($this->attributes, $key)) {
-            return data_get($this->attributes, $key, $default);
+        if (Arr::has($this->attributes, $key)) {
+            return Arr::get($this->attributes, $key, $default);
         }
 
-        if (data_has($this->request->get, $key)) {
-            return data_get($this->request->get, $key, $default);
+        if (Arr::has($this->request->get, $key)) {
+            return Arr::get($this->request->get, $key, $default);
         }
 
-        if (data_has($this->request->post, $key)) {
-            return data_get($this->request->post, $key, $default);
+        if (Arr::has($this->request->post, $key)) {
+            return Arr::get($this->request->post, $key, $default);
+        }
+
+        if (Arr::has($this->request->files, $key)) {
+            return Arr::get($this->request->files, $key, $default);
         }
 
         return $default;
@@ -93,7 +97,7 @@ class RequestInstance
      */
     public function set(string $key, $value): void
     {
-        data_set($this->attributes, $key, $value);
+        Arr::set($this->attributes, $key, $value);
     }
 
     /**
@@ -110,7 +114,7 @@ class RequestInstance
             return $this->request->post;
         }
 
-        return data_get($this->request->post, $key, $default);
+        return Arr::get($this->request->post, $key, $default);
     }
 
     /**
@@ -140,7 +144,7 @@ class RequestInstance
      */
     public function getPort(): int
     {
-        return data_get($this->request->server, 'SERVER_PORT');
+        return Arr::get($this->request->server, 'SERVER_PORT');
     }
 
     /**
@@ -160,7 +164,7 @@ class RequestInstance
      */
     public function getQueryString(): string
     {
-        return html_entity_decode(data_get($this->request->server, 'QUERY_STRING'));
+        return html_entity_decode(Arr::get($this->request->server, 'QUERY_STRING'));
     }
 
     /**
@@ -203,7 +207,7 @@ class RequestInstance
      */
     public function server(string $key = null, $default = null)
     {
-        return data_get($this->request->server, $key, $default);
+        return Arr::get($this->request->server, $key, $default);
     }
 
     /**
@@ -214,7 +218,7 @@ class RequestInstance
      */
     public function has(string $key): bool
     {
-        return data_has($this->attributes, $key) || data_has($this->request->get, $key) || data_has($this->request->post, $key);
+        return Arr::has($this->attributes, $key) || Arr::has($this->request->get, $key) || Arr::has($this->request->post, $key);
     }
 
     /**
@@ -332,7 +336,7 @@ class RequestInstance
         $placeholder = new stdClass;
 
         foreach (is_array($keys) ? $keys : func_get_args() as $key) {
-            $value = data_get($input, $key, $placeholder);
+            $value = Arr::get($input, $key, $placeholder);
 
             if ($value !== $placeholder) {
                 Arr::set($results, $key, $value);
@@ -369,7 +373,21 @@ class RequestInstance
      */
     public function query($key = null, $default = null)
     {
-        return data_get($this->request->get, $key, $default);
+        return Arr::get($this->request->get, $key, $default);
+    }
+
+    /**
+     * retrievs the given file, or all files from OC $this->reques->files
+     *
+     * @return void
+     */
+    public function files($key = null)
+    {
+        if (is_null($key)) {
+            return $this->request->files;
+        }
+
+        return Arr::get($this->request->files, $key);
     }
 
     /**

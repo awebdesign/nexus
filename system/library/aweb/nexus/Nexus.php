@@ -95,4 +95,9 @@ class Nexus
 
         $session->data['_last_url'] = $data;
     }
+
+    public static function isBooted()
+    {
+        return self::$booted;
+    }
 }
