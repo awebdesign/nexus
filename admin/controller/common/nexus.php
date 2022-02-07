@@ -8,59 +8,98 @@ use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Str;
 use Aweb\Nexus\Validator;
 use Aweb\Nexus\Db;
+use Aweb\Nexus\Support\Updater;
 
 class ControllerCommonNexus extends Controller {
 
     public function index()
     {
+        $data['header'] = $this->load->controller('common/header');
+        $data['column_left'] = $this->load->controller('common/column_left');
+        $data['footer'] = $this->load->controller('common/footer');
 
+        /**
+         * Oc3 .tpl hack
+         */
+        $defaultTemplateEngine = $this->config->get('template_engine');
+        if($defaultTemplateEngine !== 'Template') {
+            $this->config->set('template_engine', 'Template');
+        }
+
+        $updater = new Updater();
+        $data['current_version'] = $updater->getCurrentVersion();
+        $data['succces'] = $data['warning'] = null;
+        if($update_available = $updater->isNewVersionAvailable())
+        {
+            $link = url::route('common/nexus/update');
+            $data['warning'] = "Version {$update_available} is available! <a href='{$link}'>click here to install</a>";
+        } else {
+            $data['succces'] = 'Nexus is up to date!';
+        }
+
+        $this->response->setOutput($this->load->view('common/nexus', $data));
+    }
+
+    public function update()
+    {
+        try {
+            $updater = new Updater();
+            $updater->doUpdate();
+        } catch(Exception $e) {
+            Session::errors([$e->getMessage()]);
+
+            return Url::redirectTo('common/nexus');
+        }
+
+        Session::success('Nexus has been updated successfully!');
+        return Url::redirectTo('common/nexus');
     }
 
     public function tests()
     {
 
-        Db::table('setting')->insert([
-            'code' => 'test_db',
-            'serialized' => 0
-        ]);
+        // Db::table('setting')->insert([
+        //     'code' => 'test_db',
+        //     'serialized' => 0
+        // ]);
 
-        Db::table('setting')->increment('code');
+        // Db::table('setting')->increment('code');
 
-        $results = Db::from('setting')->where('setting_id', 1)->first();
-        pre($results->code);
+        // $results = Db::from('setting')->where('setting_id', 1)->first();
+        // pre($results->code);
 
-        $results = Db::select('select setting_id, code from ' . DB_PREFIX . 'setting where setting_id = ?', [1]);
-        pre($results);
+        // $results = Db::select('select setting_id, code from ' . DB_PREFIX . 'setting where setting_id = ?', [1]);
+        // pre($results);
 
-        $results = DB::table('setting')->count();
-        pre($results);
+        // $results = DB::table('setting')->count();
+        // pre($results);
 
-        $cursor = DB::table('setting')
-        ->select('code', DB::raw('COUNT(setting_id) as total_ids'))
-        ->groupBy('code')
-        ->havingRaw('count(total_ids) > ?', [1])
-        ->cursor();
-        foreach ($cursor as $e) {
-            pre($e);
-        }
+        // $cursor = DB::table('setting')
+        // ->select('code', DB::raw('COUNT(setting_id) as total_ids'))
+        // ->groupBy('code')
+        // ->havingRaw('count(total_ids) > ?', [1])
+        // ->cursor();
+        // foreach ($cursor as $e) {
+        //     pre($e);
+        // }
 
-        $test = DB::table('zone')->where('zone_id', '>', '50')->limit(5)->pluck('name', 'code')->toJson();
-        pre($test);
+        // $test = DB::table('zone')->where('zone_id', '>', '50')->limit(5)->pluck('name', 'code')->toJson();
+        // pre($test);
 
-        DB::table('setting')->select('code')->orderBy('setting_id')->groupBy('code')->chunk(5, function($settings)
-        {
-            foreach ($settings as $setting)
-            {
-                pre($setting);
-            }
-        });
+        // DB::table('setting')->select('code')->orderBy('setting_id')->groupBy('code')->chunk(5, function($settings)
+        // {
+        //     foreach ($settings as $setting)
+        //     {
+        //         pre($setting);
+        //     }
+        // });
 
-        $orders = DB::table('setting')
-                ->select('code', DB::raw('COUNT(setting_id) as total_ids'))
-                ->groupBy('code')
-                ->havingRaw('count(total_ids) > ?', [5])
-                ->get();
-        dd($orders);
+        // $orders = DB::table('setting')
+        //         ->select('code', DB::raw('COUNT(setting_id) as total_ids'))
+        //         ->groupBy('code')
+        //         ->havingRaw('count(total_ids) > ?', [5])
+        //         ->get();
+        // dd($orders);
 
         // if (Request::get('flush')) {
         //     Session::flush();
@@ -177,40 +216,40 @@ class ControllerCommonNexus extends Controller {
         // }
         // dump(Session::all());
 
-        Config::set('config_admin_language', 'ro-ro');
-        Session::set('language', 'ro-ro');
+        // Config::set('config_admin_language', 'ro-ro');
+        // Session::set('language', 'ro-ro');
 
-        $this->load->language('customer/customer');
-        if (Request::method() === 'POST') {
-            Request::validate([
-                'firstname' => 'required|max:255',
-                'lastname' => 'required',
-            ]);
-        }
+        // $this->load->language('customer/customer');
+        // if (Request::method() === 'POST') {
+        //     Request::validate([
+        //         'firstname' => 'required|max:255',
+        //         'lastname' => 'required',
+        //     ]);
+        // }
 
-        // dump('old firstname', Request::old('firstname'));
-        // dump('old lastname', Request::old('lastname'));
-        Session::get('_errors');
-        echo '<form method="POST" action="">
-            <div class="form-group">
-                <label>
-                    Firstname <input type="text" name="firstname" class="form-control" value="' . Request::old('firstname') . '">
-                </label>
-                <div class="text-danger">'. error('firstname') .'</div>
-            </div>
-            <div class="form-group">
-                <label>
-                    Lastname <input type="text" name="lastname" class="form-control" value="' . Request::old('lastname') . '">
-                </label>
-                <div class="text-danger">'. error('lastname') .'</div>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>';
+        // // dump('old firstname', Request::old('firstname'));
+        // // dump('old lastname', Request::old('lastname'));
+        // Session::get('_errors');
+        // echo '<form method="POST" action="">
+        //     <div class="form-group">
+        //         <label>
+        //             Firstname <input type="text" name="firstname" class="form-control" value="' . Request::old('firstname') . '">
+        //         </label>
+        //         <div class="text-danger">'. error('firstname') .'</div>
+        //     </div>
+        //     <div class="form-group">
+        //         <label>
+        //             Lastname <input type="text" name="lastname" class="form-control" value="' . Request::old('lastname') . '">
+        //         </label>
+        //         <div class="text-danger">'. error('lastname') .'</div>
+        //     </div>
+        //     <button type="submit" class="btn btn-primary">Submit</button>
+        // </form>';
 
-        dump(Url::route('foo/bar', ['foo' => 123]));
-        dump(
-            Url::route('foo/bar', ['foo' => 123], 1)
-        );
+        // dump(Url::route('foo/bar', ['foo' => 123]));
+        // dump(
+        //     Url::route('foo/bar', ['foo' => 123], 1)
+        // );
 
         // Session::set('config_admin_language', 'ro-ro');
         // Session::set('language', 'ro-ro');
