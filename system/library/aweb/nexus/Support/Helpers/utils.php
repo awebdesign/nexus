@@ -25,9 +25,9 @@ if (! function_exists('_alerts')) {
      * @param string $key "success" | "warning" | "errors"
      * @return void
      */
-    function _alerts(string $key = 'errors')
-    {
-        $alerts = (array) Session::get('_'.$key);
+    function _alerts(string $key = 'errors', $default)
+    {;
+        $alerts = (array) Session::get('_'.$key, $default);
         if ($alerts) {
             $class = $key === 'errors' ? 'danger' : $key;
             echo '<div class="alert alert-'.$class.'">
