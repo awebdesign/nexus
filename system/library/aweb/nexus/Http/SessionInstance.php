@@ -270,41 +270,72 @@ class SessionInstance
     }
 
     /**
-     * $this->session->data['_errors'][] = $val | return $this->session->data['_errors']
+     * Errors | Get/Set all errors
+     *
+     * @param mixed $key | if is an array or a string will be a setter
+     * @param mixed $val | used for setter
+     * @return mixed Arry or Void
      */
-    public function errors(string $key, $val = null)
+    public function errors($key = null, $val = null)
     {
-        if ($val) {
+        if(is_array($key)) {
+            foreach($key as $k => $v) {
+                $this->flash('_errors.'.$k, $v);
+            }
+        } elseif ($val) {
             $this->flash('_errors.'.$key, $val);
         }
-        else {
-            $this->get('_errors.'.$key, []);
+        elseif($key) {
+            return $this->get('_errors.'.$key, []);
         }
+
+        return $this->get('_errors', []);
     }
 
     /**
-     * $this->session->data['_warning'][] = $val | return $this->session->data['_warning']
+     * Set warning message/messages
+     *
+     * @param mixed $key | if is an array or a string will be a setter
+     * @param mixed $val | used for setter
+     * @return mixed Arry or Void
      */
-    public function warning(string $key, $val = null)
+    public function warning($key = null, $val = null)
     {
-        if ($val) {
-            $this->flash('_warning.'.$key, $val);
-        }
-        else {
-            $this->get('_warning.'.$key, []);
-        }
+        return $this->flashSpecial('_warning', $key, $val);
     }
 
     /**
-     * $this->session->data['_success'][] = $val | return $this->session->data['_success']
+     * Set success message/messages
+     *
+     * @param mixed $key | if is an array or a string will be a setter
+     * @param mixed $val | used for setter
+     * @return mixed Arry or Void
      */
-    public function success(string $key, $val = null)
+    public function success($key = null, $val = null)
     {
+        return $this->flashSpecial('_success', $key, $val);
+    }
+
+    /**
+     * Used for special flash messages
+     *
+     * @param string $type
+     * @param mixed $key
+     * @param mixed $val
+     * @return mixed
+     */
+    private function flashSpecial($type, $key = null, $val = null)
+    {
+        $messages = is_array($key) ? $key : [$key];
+
         if ($val) {
-            $this->flash('_success.'.$key, $val);
-        }
-        else {
-            $this->get('_success.'.$key, []);
+            $this->flash($type . '.' .$key, $val);
+        } elseif(!empty($messages)) {
+            foreach($messages as $k => $v) {
+                $this->flash($type . '.' . $k, $v);
+            }
+        } else {
+            return $this->get($type);
         }
     }
 }
