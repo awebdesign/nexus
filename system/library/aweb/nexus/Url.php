@@ -34,11 +34,7 @@ class Url
         }
 
         if ($type === self::ADMIN) {
-            if (version_compare(VERSION, '3.0', '<')) {
-                $params['token'] = Session::get('token');
-            } else {
-                $params['user_token'] = Session::get('user_token');
-            }
+            $params[getTokenKey()] = Session::get(getTokenKey());
         }
 
         $url = Nexus::getRegistry('url')->link($name, http_build_query($params), true);
