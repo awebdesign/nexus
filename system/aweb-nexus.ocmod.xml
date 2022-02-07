@@ -58,7 +58,7 @@ require_once DIR_SYSTEM . 'library/aweb/nexus/Nexus.php';
 			<add position="before"><![CDATA[
     /* start Aweb Nexus */
     public function getActiveConnection() {
-		$instance = isset($this->db) ? $this->db : $this->adapter; //OC 2.1 FIX
+		$instance = isset($this->db) ? $this->db : $this->adaptor; //OC 2.1 FIX
 		return $instance->shareConnection();
 	}
 	/* end Aweb Nexus */
