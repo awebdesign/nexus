@@ -3,6 +3,7 @@
 use Aweb\Nexus\Config;
 use Aweb\Nexus\Request;
 use Aweb\Nexus\Session;
+use Aweb\Nexus\Url;
 use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Collection;
 use Aweb\Nexus\Support\HigherOrderTapProxy;
@@ -309,5 +310,20 @@ if (! function_exists('tap')) {
         $callback($value);
 
         return $value;
+    }
+}
+
+if (! function_exists('route')) {
+    /**
+     * call Url::route(string $name, array $params = [], $force = null)
+     *
+     * @param string $name
+     * @param array $params | query params
+     * @param int $force | null
+     * @return string
+     */
+    function route(string $name, array $params = [], $force = null)
+    {
+        return Url::route($name, $params, $force);
     }
 }

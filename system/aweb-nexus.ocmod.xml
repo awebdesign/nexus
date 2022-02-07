@@ -56,11 +56,19 @@ require_once DIR_SYSTEM . 'library/aweb/nexus/Nexus.php';
 		<operation>
 			<search><![CDATA[function query]]></search>
 			<add position="before"><![CDATA[
-    /* Aweb Nexus */
+    /* start Aweb Nexus */
     public function getActiveConnection() {
 		$instance = isset($this->db) ? $this->db : $this->adapter; //OC 2.1 FIX
 		return $instance->shareConnection();
-	}]]></add>
+	}
+	/* end Aweb Nexus */
+	]]></add>
         </operation>
+	</file>
+	<file path="admin/view/template/common/header.tpl">
+		<operation>
+			<search><![CDATA[www.opencart.com]]></search>
+			<add position="before"><![CDATA[<li><a href="<?php echo route('common/nexus'); ?>"><b>Powered by Aweb Nexus</a></b></li>]]></add>
+		</operation>
 	</file>
 </modification>
