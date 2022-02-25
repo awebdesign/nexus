@@ -12,3 +12,6 @@ This is a free project so feel free to join!
 
 # Documentation
 You can find all the documentation on the Wiki page
+
+# Updates
+The library has an auto update method, all you need is to click on the Nexus link from you Admin panel / Help icons (top righ) / Nexus
