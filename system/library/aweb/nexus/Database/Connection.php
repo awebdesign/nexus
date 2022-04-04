@@ -265,6 +265,18 @@ class Connection implements ConnectionInterface
     /**
      * Begin a fluent query against a database table.
      *
+     * @param QueryBuilder query
+     * @param  string  as
+     * @return \Aweb\Nexus\Database\Query\Builder
+     */
+    public function fromSub($query, $as)
+    {
+        return $this->query()->fromSub($query, $as);
+    }
+    
+    /**
+     * Begin a fluent query against a database table.
+     *
      * @param  string  $table
      * @return \Aweb\Nexus\Database\Query\Builder
      */
