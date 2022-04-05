@@ -97,7 +97,8 @@ final class PdoAdapter {
                  * Get FETCH_ASSOC if the query is a SELECT or a SHOW command
                  */
                 $queryString = strtolower(trim(preg_replace("/[\s\t\r\n]+/", ' ', $this->statement->queryString)));
-                $queryData = explode(' ', $queryString);
+				$queryString = preg_replace('!\s+!', ' ', $queryString);
+				$queryData = explode(' ', $queryString);
                 $queryType = isset($queryData[0]) ? trim($queryData[0]) : null;
                 if(in_array($queryType, ['select', 'show'])) {
                     if(in_array($queryType, ['select', 'show'])) {
