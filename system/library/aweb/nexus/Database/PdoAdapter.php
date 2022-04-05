@@ -100,9 +100,7 @@ final class PdoAdapter {
                 $queryData = explode(' ', $queryString);
                 $queryType = isset($queryData[0]) ? trim($queryData[0]) : null;
                 if(in_array($queryType, ['select', 'show'])) {
-                    while ($row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
-					    $data[] = $row;
-				    }
+					$data = $this->statement->fetchAll();
                 }
 
 				$result = new \stdClass();
