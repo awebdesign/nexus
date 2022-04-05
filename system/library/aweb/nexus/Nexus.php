@@ -26,6 +26,8 @@ require_once(DIR_SYSTEM . 'library/aweb/nexus/vendor/autoload.php');
 
 class Nexus
 {
+    const VERSION = '2.0.3';
+
     private static $registry;
     private static $booted;
 

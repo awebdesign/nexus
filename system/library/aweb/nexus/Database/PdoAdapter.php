@@ -93,15 +93,11 @@ final class PdoAdapter {
 		try {
 			if ($this->statement && $this->statement->execute($params)) {
 				$data = array();
-
                 /**
                  * Get FETCH_ASSOC if the query is a SELECT or a SHOW command
                  */
-                $queryString = trim(preg_replace("/[^A-Za-z0-9 ]/", '', $this->statement->queryString));
-                $queryString = strtolower(str_replace(array("\r", "\n", "\r\n"), " ", $queryString));
-                $queryString = preg_replace('!\s+!', ' ', $queryString);
+                $queryString = strtolower(trim(preg_replace("/[\s\t\r\n]+/", ' ', $this->statement->queryString)));
                 $queryData = explode(' ', $queryString);
-
                 $queryType = isset($queryData[0]) ? trim($queryData[0]) : null;
                 if(in_array($queryType, ['select', 'show'])) {
                     while ($row = $this->statement->fetch(\PDO::FETCH_ASSOC)) {
