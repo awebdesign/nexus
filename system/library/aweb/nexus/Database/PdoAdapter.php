@@ -97,7 +97,7 @@ final class PdoAdapter {
                  * Get FETCH_ASSOC if the query is a SELECT or a SHOW command
                  */
 				preg_match('/\w+/', $this->statement->queryString, $m);
-                $queryType = strtolower(isset($m[0]) ? $m[0] : null);
+                $queryType = isset($m[0]) ? strtolower($m[0]) : null;
 				
                 if(in_array($queryType, ['select', 'show'])) {
                     if(in_array($queryType, ['select', 'show'])) {
