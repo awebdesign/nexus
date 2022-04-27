@@ -37,7 +37,12 @@ class ControllerCommonNexus extends Controller {
             $data['succces'] = 'Nexus is up to date!';
         }
 
-        $this->response->setOutput($this->load->view('common/nexus', $data));
+        $tpl_ext = '';
+        if(version_compare(VERSION, '2.3.0.2', '<')) {
+            $tpl_ext = '.tpl';
+        }
+
+        $this->response->setOutput($this->load->view('common/nexus' . $tpl_ext, $data));
     }
 
     public function update()
