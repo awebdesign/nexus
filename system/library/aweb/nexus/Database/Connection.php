@@ -13,12 +13,14 @@ use Aweb\Nexus\Database\Query\Expression;
 use Illuminate\Contracts\Events\Dispatcher;
 use Aweb\Nexus\Database\Events\QueryExecuted;
 use Doctrine\DBAL\Connection as DoctrineConnection;
+use Doctrine\DBAL\Driver\PDOMySql\Driver as DoctrineDriver;
 use Aweb\Nexus\Database\Query\Processors\Processor;
 use Aweb\Nexus\Database\Query\Builder as QueryBuilder;
 use Aweb\Nexus\Database\Schema\Builder as SchemaBuilder;
 use Aweb\Nexus\Database\Query\Grammars\Grammar as QueryGrammar;
 use Aweb\Nexus\Nexus;
 use Aweb\Nexus\Support\Str;
+use Aweb\Nexus\Database\Schema\Grammars\MySqlGrammar;
 
 class Connection implements ConnectionInterface
 {
@@ -202,20 +204,20 @@ class Connection implements ConnectionInterface
      *
      * @return void
      */
-    // public function useDefaultSchemaGrammar()
-    // {
-    //     $this->schemaGrammar = $this->getDefaultSchemaGrammar();
-    // }
+    public function useDefaultSchemaGrammar()
+    {
+        $this->schemaGrammar = $this->getDefaultSchemaGrammar();
+    }
 
     /**
      * Get the default schema grammar instance.
      *
      * @return \Aweb\Nexus\Database\Schema\Grammars\Grammar
      */
-    // protected function getDefaultSchemaGrammar()
-    // {
-    //     //
-    // }
+    protected function getDefaultSchemaGrammar()
+    {
+        return new MySqlGrammar;
+    }
 
     /**
      * Set the query post processor to the default implementation.
@@ -238,18 +240,28 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * Get the Doctrine DBAL driver.
+     *
+     * @return \Doctrine\DBAL\Driver\PDOMySql\Driver
+     */
+    protected function getDoctrineDriver()
+    {
+        return new DoctrineDriver;
+    }
+
+    /**
      * Get a schema builder instance for the connection.
      *
      * @return \Aweb\Nexus\Database\Schema\Builder
      */
-    // public function getSchemaBuilder()
-    // {
-    //     if (is_null($this->schemaGrammar)) {
-    //         $this->useDefaultSchemaGrammar();
-    //     }
+    public function getSchemaBuilder()
+    {
+        if (is_null($this->schemaGrammar)) {
+            $this->useDefaultSchemaGrammar();
+        }
 
-    //     return new SchemaBuilder($this);
-    // }
+        return new SchemaBuilder($this);
+    }
 
     /**
      * Begin a fluent query against a database table.
@@ -873,60 +885,60 @@ class Connection implements ConnectionInterface
         }
     }
 
-    // /**
-    //  * Is Doctrine available?
-    //  *
-    //  * @return bool
-    //  */
-    // public function isDoctrineAvailable()
-    // {
-    //     return class_exists('Doctrine\DBAL\Connection');
-    // }
+    /**
+     * Is Doctrine available?
+     *
+     * @return bool
+     */
+    public function isDoctrineAvailable()
+    {
+        return class_exists('Doctrine\DBAL\Connection');
+    }
 
-    // /**
-    //  * Get a Doctrine Schema Column instance.
-    //  *
-    //  * @param  string  $table
-    //  * @param  string  $column
-    //  * @return \Doctrine\DBAL\Schema\Column
-    //  */
-    // public function getDoctrineColumn($table, $column)
-    // {
-    //     $schema = $this->getDoctrineSchemaManager();
+    /**
+     * Get a Doctrine Schema Column instance.
+     *
+     * @param  string  $table
+     * @param  string  $column
+     * @return \Doctrine\DBAL\Schema\Column
+     */
+    public function getDoctrineColumn($table, $column)
+    {
+        $schema = $this->getDoctrineSchemaManager();
 
-    //     return $schema->listTableDetails($table)->getColumn($column);
-    // }
+        return $schema->listTableDetails($table)->getColumn($column);
+    }
 
-    // /**
-    //  * Get the Doctrine DBAL schema manager for the connection.
-    //  *
-    //  * @return \Doctrine\DBAL\Schema\AbstractSchemaManager
-    //  */
-    // public function getDoctrineSchemaManager()
-    // {
-    //     return $this->getDoctrineDriver()->getSchemaManager($this->getDoctrineConnection());
-    // }
+    /**
+     * Get the Doctrine DBAL schema manager for the connection.
+     *
+     * @return \Doctrine\DBAL\Schema\AbstractSchemaManager
+     */
+    public function getDoctrineSchemaManager()
+    {
+        return $this->getDoctrineDriver()->getSchemaManager($this->getDoctrineConnection());
+    }
 
-    // /**
-    //  * Get the Doctrine DBAL database connection instance.
-    //  *
-    //  * @return \Doctrine\DBAL\Connection
-    //  */
-    // public function getDoctrineConnection()
-    // {
-    //     if (is_null($this->doctrineConnection)) {
-    //         $driver = $this->getDoctrineDriver();
+    /**
+     * Get the Doctrine DBAL database connection instance.
+     *
+     * @return \Doctrine\DBAL\Connection
+     */
+    public function getDoctrineConnection()
+    {
+        if (is_null($this->doctrineConnection)) {
+            $driver = $this->getDoctrineDriver();
 
-    //         $this->doctrineConnection = new DoctrineConnection(array_filter([
-    //             'pdo' => $this->getPdo(),
-    //             'dbname' => $this->getConfig('database'),
-    //             'driver' => $driver->getName(),
-    //             'serverVersion' => $this->getConfig('server_version'),
-    //         ]), $driver);
-    //     }
+            $this->doctrineConnection = new DoctrineConnection(array_filter([
+                'pdo' => $this->getPdo(),
+                'dbname' => $this->getConfig('database'),
+                'driver' => $driver->getName(),
+                'serverVersion' => $this->getConfig('server_version'),
+            ]), $driver);
+        }
 
-    //     return $this->doctrineConnection;
-    // }
+        return $this->doctrineConnection;
+    }
 
     /**
      * Get the current PDO connection.

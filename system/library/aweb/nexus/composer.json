@@ -10,10 +10,11 @@
         "OpenCart"
     ],
     "homepage": "https://www.awebdesign.ro/",
-    "version": "2.0.10",
+    "version": "2.1.0",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "php": ">=7.3",
         "rakit/validation": "^1.4",
         "symfony/var-dumper": "^5.4"
     },

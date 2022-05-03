@@ -8,6 +8,8 @@ use Aweb\Nexus\Support\Arr;
 use Aweb\Nexus\Support\Str;
 use Aweb\Nexus\Validator;
 use Aweb\Nexus\Db;
+use Aweb\Nexus\Schema;
+use Aweb\Nexus\Database\Schema\Blueprint;
 use Aweb\Nexus\Support\Updater;
 
 class ControllerCommonNexus extends Controller {
@@ -63,8 +65,9 @@ class ControllerCommonNexus extends Controller {
     public function tests()
     {
 
+
+
         // transactions https://laravel.com/docs/5.8/database
-        // rollback ?!??!
         // pre( DB::table('setting')->count());
         // DB::transaction(function () {
         //     DB::table('setting')->insert(['code' => 'test_db']);
@@ -79,35 +82,15 @@ class ControllerCommonNexus extends Controller {
         // DB::commit();
         // DB::rollBack();
         // pre( DB::table('setting')->count());
-        // /**
-        //  * Start a new database transaction.
-        //  *
-        //  * @return void
-        //  */
-        // public function beginTransaction();
-
-        // /**
-        //  * Commit the active database transaction.
-        //  *
-        //  * @return void
-        //  */
-        // public function commit();
-
-        // /**
-        //  * Rollback the active database transaction.
-        //  *
-        //  * @return void
-        //  */
-        // public function rollBack();
-
-        // /**
-        //  * Get the number of active transactions.
-        //  *
-        //  * @return int
-        //  */
-        // public function transactionLevel();
 
 
+        // Schema::create('flights', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->string('name');
+        //     $table->string('airline');
+        //     $table->timestamps();
+        // });
+        // Schema::drop('flights');
 
         // Db::table('setting')->insert([
         //     'code' => 'test_db',
