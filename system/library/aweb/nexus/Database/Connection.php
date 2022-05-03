@@ -22,9 +22,9 @@ use Aweb\Nexus\Support\Str;
 
 class Connection implements ConnectionInterface
 {
-    // use DetectsDeadlocks,
-    use DetectsLostConnections;
-    //     Concerns\ManagesTransactions;
+    use DetectsDeadlocks,
+        DetectsLostConnections,
+        Concerns\ManagesTransactions;
 
     /**
      * The active PDO connection.
@@ -273,7 +273,7 @@ class Connection implements ConnectionInterface
     {
         return $this->query()->fromSub($query, $as);
     }
-    
+
     /**
      * Begin a fluent query against a database table.
      *

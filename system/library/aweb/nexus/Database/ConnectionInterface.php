@@ -122,35 +122,35 @@ interface ConnectionInterface
      *
      * @throws \Throwable
      */
-    //public function transaction(Closure $callback, $attempts = 1);
+    public function transaction(Closure $callback, $attempts = 1);
 
     /**
      * Start a new database transaction.
      *
      * @return void
      */
-    //public function beginTransaction();
+    public function beginTransaction();
 
     /**
      * Commit the active database transaction.
      *
      * @return void
      */
-    //public function commit();
+    public function commit();
 
     /**
      * Rollback the active database transaction.
      *
      * @return void
      */
-    //public function rollBack();
+    public function rollBack();
 
     /**
      * Get the number of active transactions.
      *
      * @return int
      */
-    //public function transactionLevel();
+    public function transactionLevel();
 
     /**
      * Execute the given callback in "dry run" mode.

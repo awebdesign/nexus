@@ -63,6 +63,52 @@ class ControllerCommonNexus extends Controller {
     public function tests()
     {
 
+        // transactions https://laravel.com/docs/5.8/database
+        // rollback ?!??!
+        // pre( DB::table('setting')->count());
+        // DB::transaction(function () {
+        //     DB::table('setting')->insert(['code' => 'test_db']);
+
+        //     DB::table('setting')->insert(['codes' => 'test_db2']);
+        // });
+        // pre( DB::table('setting')->count(),1);
+
+        // pre( DB::table('setting')->count());
+        // DB::beginTransaction();
+        // DB::table('setting')->insert(['code' => 'test_db2']);
+        // DB::commit();
+        // DB::rollBack();
+        // pre( DB::table('setting')->count());
+        // /**
+        //  * Start a new database transaction.
+        //  *
+        //  * @return void
+        //  */
+        // public function beginTransaction();
+
+        // /**
+        //  * Commit the active database transaction.
+        //  *
+        //  * @return void
+        //  */
+        // public function commit();
+
+        // /**
+        //  * Rollback the active database transaction.
+        //  *
+        //  * @return void
+        //  */
+        // public function rollBack();
+
+        // /**
+        //  * Get the number of active transactions.
+        //  *
+        //  * @return int
+        //  */
+        // public function transactionLevel();
+
+
+
         // Db::table('setting')->insert([
         //     'code' => 'test_db',
         //     'serialized' => 0
