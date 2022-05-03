@@ -31,8 +31,8 @@ class ControllerCommonNexus extends Controller {
         $data['succces'] = $data['warning'] = null;
         if($update_available = $updater->isNewVersionAvailable())
         {
-            $link = url::route('common/nexus/update');
-            $data['warning'] = "Version " . $update_available['version'] . " is available! <a href='{$link}'>click here to install</a>";
+            $link = Url::route('common/nexus/update');
+            $data['warning'] = "Version " . $update_available['version'] . " is available! <a href='{$link}'>Click here to install</a>";
         } else {
             $data['succces'] = 'Nexus is up to date!';
         }

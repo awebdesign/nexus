@@ -71,4 +71,19 @@ require_once DIR_SYSTEM . 'library/aweb/nexus/Nexus.php';
 			<add position="before"><![CDATA[<li><a href="<?php echo route('common/nexus'); ?>"><b>Powered by Aweb Nexus</a></b></li>]]></add>
 		</operation>
 	</file>
+	<file path="admin/controller/common/dashboard.php">
+		<operation>
+			<search><![CDATA[$data['error_install'] = '';]]></search>
+			<add position="after"><![CDATA[
+		if(class_exists('Aweb\Nexus\Nexus')) {
+			$updater = new Aweb\Nexus\Support\Updater();
+			if($update_available = $updater->isNewVersionAvailable())
+			{
+				$link = Aweb\Nexus\Url::route('common/nexus/update');
+				$data['error_install'] = "Warning! Nexus version " . $update_available['version'] . " is available! <a href='{$link}'>Click here to install</a>";
+			}
+		}
+			]]></add>
+		</operation>
+	</file>
 </modification>
