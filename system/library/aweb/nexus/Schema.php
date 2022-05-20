@@ -26,6 +26,7 @@ class Schema
             if(!class_exists('Aweb\Nexus\Database\PdoAdapter')) {
                 throw new RuntimeException('Nexus PdoAdapter was not loaded! Check ocmod file.');
             }
+            Db::setDatabaseName(DB_DATABASE);
             Db::setTablePrefix(DB_PREFIX);
             self::$instance = Db::getSchemaBuilder();
         }

@@ -324,17 +324,17 @@ class Connection implements ConnectionInterface
         return array_shift($records);
     }
 
-    // /**
-    //  * Run a select statement against the database.
-    //  *
-    //  * @param  string  $query
-    //  * @param  array   $bindings
-    //  * @return array
-    //  */
-    // // public function selectFromWriteConnection($query, $bindings = [])
-    // // {
-    // //     return $this->select($query, $bindings, false);
-    // // }
+    /**
+     * Run a select statement against the database.
+     *
+     * @param  string  $query
+     * @param  array   $bindings
+     * @return array
+     */
+    public function selectFromWriteConnection($query, $bindings = [])
+    {
+        return $this->select($query, $bindings, false);
+    }
 
     /**
      * Run a select statement against the database.

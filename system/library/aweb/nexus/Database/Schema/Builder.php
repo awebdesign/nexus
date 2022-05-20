@@ -69,10 +69,11 @@ class Builder
      */
     public function hasTable($table)
     {
+        $database = $this->connection->getDatabaseName();
         $table = $this->connection->getTablePrefix().$table;
 
         return count($this->connection->selectFromWriteConnection(
-            $this->grammar->compileTableExists(), [$table]
+            $this->grammar->compileTableExists(), [$database, $table]
         )) > 0;
     }
 

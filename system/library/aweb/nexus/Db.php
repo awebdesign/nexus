@@ -41,6 +41,7 @@ class Db
         }
 
         // set OC table prefix
+        self::getInstance()->setDatabaseName(DB_DATABASE);
         self::getInstance()->setTablePrefix(DB_PREFIX);
 
         return call_user_func_array([self::getInstance(), $name], $arguments);
