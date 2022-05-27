@@ -98,11 +98,9 @@ final class PdoAdapter {
                  */
 				preg_match('/\w+/', $this->statement->queryString, $m);
                 $queryType = isset($m[0]) ? strtolower($m[0]) : null;
-				
-                if(in_array($queryType, ['select', 'show'])) {
-                    if(in_array($queryType, ['select', 'show'])) {
-                        $data = $this->statement->fetchAll(\PDO::FETCH_ASSOC);
-                    }
+
+                if(in_array($queryType, ['select', 'show', 'desc'])) {
+                    $data = $this->statement->fetchAll(\PDO::FETCH_ASSOC);
                 }
 
 				$result = new \stdClass();

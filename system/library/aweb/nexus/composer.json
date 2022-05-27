@@ -10,7 +10,7 @@
         "OpenCart"
     ],
     "homepage": "https://www.awebdesign.ro/",
-    "version": "2.1.0",
+    "version": "2.1.01",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
